@@ -1,0 +1,19 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+
+@keyframes scroll {
+  0% {
+    transform: translateX(0);
+  }
+  100% {
+    transform: translateX(calc(-100% / 7));
+  }
+}
+
+.carousel-track {
+  display: flex;
+  animation: scroll 14s linear infinite;
+}
+
