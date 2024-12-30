@@ -1,4 +1,5 @@
 import Image from "next/image";
+import Link from "next/link";
 
 const ProductCard = ({ props }: { props: any }) => {
   const { product } = props;
@@ -35,7 +36,7 @@ const ProductCard = ({ props }: { props: any }) => {
       <div className="card-body bg-cyan-800 rounded-2xl absolute md:top-[370px] top-[270px] w-full h-[100px]">
         <div className="text-white flex justify-between items-center">
           <div>
-            <h2 className="card-title">{product.title}</h2>
+            <Link href={`product/${encodeURIComponent(product._id)}`}><h2 className="card-title">{product.title}</h2></Link>
             <p className="text-white">${pPrice}</p>
           </div>
           <Image

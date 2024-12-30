@@ -4,6 +4,7 @@ import Section_1 from "./components/homepage/section_1";
 import TrendingProducts from "./components/homepage/trendingProducts";
 
 export default function Home() {
+  
   return (
     <main>
       <Hero/>

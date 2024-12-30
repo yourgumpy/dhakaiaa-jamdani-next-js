@@ -6,8 +6,17 @@ import { faSun, faMoon } from "@fortawesome/free-solid-svg-icons";
 import { useState } from "react";
 import { useRef } from "react";
 import { useEffect } from "react";
+import { getUser } from "@/app/auth/getUser";
+import { User } from "@supabase/supabase-js";
 
-const Navbar = ({ isChecked, onToggle }: { isChecked: boolean, onToggle: () => void }) => {
+const Navbar = ({
+  isChecked,
+  onToggle,
+}: {
+  isChecked: boolean;
+  onToggle: () => void;
+}) => {
+  const [user, setUser] = useState<User | null>(null);
   const [searchOpen, setSearchOpen] = useState(false);
   const searchInputRef = useRef<HTMLInputElement>(null);
   const handleSearchToggle = () => {
@@ -15,8 +24,21 @@ const Navbar = ({ isChecked, onToggle }: { isChecked: boolean, onToggle: () => v
   };
 
   useEffect(() => {
+    const fetchUser = async () => {
+      const user = await getUser();
+      // console.log(user);
+      setUser(user);
+    };
+
+    fetchUser();
+  }, []);
+
+  useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
-      if (searchInputRef.current && !searchInputRef.current.contains(event.target as Node)) {
+      if (
+        searchInputRef.current &&
+        !searchInputRef.current.contains(event.target as Node)
+      ) {
         setSearchOpen(false);
       }
     };
@@ -32,7 +54,11 @@ const Navbar = ({ isChecked, onToggle }: { isChecked: boolean, onToggle: () => v
       <div className="navbar transition-all duration-300 bg-base-300 rounded-md fixed top-4 left-1/2 transform -translate-x-1/2 shadow-lg w-11/12 z-50">
         <div className="navbar-start">
           <div className="dropdown">
-            <div tabIndex={0} role="button" className="btn btn-ghost btn-circle">
+            <div
+              tabIndex={0}
+              role="button"
+              className="btn btn-ghost btn-circle"
+            >
               <svg
                 xmlns="http://www.w3.org/2000/svg"
                 className="h-5 w-5"
@@ -40,7 +66,12 @@ const Navbar = ({ isChecked, onToggle }: { isChecked: boolean, onToggle: () => v
                 viewBox="0 0 24 24"
                 stroke="currentColor"
               >
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4 6h16M4 12h16M4 18h7" />
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth="2"
+                  d="M4 6h16M4 12h16M4 18h7"
+                />
               </svg>
             </div>
             <ul
@@ -58,7 +89,10 @@ const Navbar = ({ isChecked, onToggle }: { isChecked: boolean, onToggle: () => v
               </li>
               {/* Toggle dark/light mode and login for mobile */}
               <li className="block md:hidden">
-                <label htmlFor="custom-toggle" className="flex items-center space-x-2">
+                <label
+                  htmlFor="custom-toggle"
+                  className="flex items-center space-x-2"
+                >
                   <input
                     type="checkbox"
                     className="hidden"
@@ -105,10 +139,10 @@ const Navbar = ({ isChecked, onToggle }: { isChecked: boolean, onToggle: () => v
         <div className="navbar-center">
           <a className="btn btn-ghost text-xl text-red-500">ঢাকাইয়া জামদানি</a>
         </div>
-        <div className="navbar-end"> 
-        <div
+        <div className="navbar-end">
+          <div
             className={`pl-2 transition-all duration-300 absolute top-full left-1/2 transform -translate-x-1/2 ${
-              searchOpen ? 'opacity-100 scale-100' : 'opacity-0 scale-95'
+              searchOpen ? "opacity-100 scale-100" : "opacity-0 scale-95"
             }`}
           >
             {searchOpen && (
@@ -120,7 +154,10 @@ const Navbar = ({ isChecked, onToggle }: { isChecked: boolean, onToggle: () => v
               />
             )}
           </div>
-          <button className="btn btn-ghost btn-circle" onClick={handleSearchToggle}>
+          <button
+            className="btn btn-ghost btn-circle"
+            onClick={handleSearchToggle}
+          >
             <svg
               xmlns="http://www.w3.org/2000/svg"
               className="h-5 w-5"
@@ -138,29 +175,38 @@ const Navbar = ({ isChecked, onToggle }: { isChecked: boolean, onToggle: () => v
           </button>
           <div className="hidden md:flex items-center space-x-2 ">
             {/* Toggle dark/light mode for desktop */}
-          <label htmlFor="custom-toggle" className="relative inline-block w-12 h-6 cursor-pointer">
-            <input
-              type="checkbox"
-              className="hidden"
-              id="custom-toggle"
-              checked={isChecked}
-              onChange={onToggle}
-            />
-            <span className="absolute top-0 left-0 w-full h-full bg-gray-300 rounded-full transition duration-300"></span>
-            <span
-              className={`absolute top-0 w-6 h-6 bg-white rounded-full shadow transform transition duration-300 ${
-                isChecked ? "translate-x-6" : ""
-              }`}
+            <label
+              htmlFor="custom-toggle"
+              className="relative inline-block w-12 h-6 cursor-pointer"
             >
-              <FontAwesomeIcon
-                icon={isChecked ? faSun : faMoon}
-                className="absolute inset-0 m-auto w-4 h-4"
+              <input
+                type="checkbox"
+                className="hidden"
+                id="custom-toggle"
+                checked={isChecked}
+                onChange={onToggle}
               />
-            </span>
-          </label>
-          <button className="btn btn-ghost btn-circle">
-            <span className="material-icons">person</span>
-          </button>
+              <span className="absolute top-0 left-0 w-full h-full bg-gray-300 rounded-full transition duration-300"></span>
+              <span
+                className={`absolute top-0 w-6 h-6 bg-white rounded-full shadow transform transition duration-300 ${
+                  isChecked ? "translate-x-6" : ""
+                }`}
+              >
+                <FontAwesomeIcon
+                  icon={isChecked ? faSun : faMoon}
+                  className="absolute inset-0 m-auto w-4 h-4"
+                />
+              </span>
+            </label>
+            {user ? (
+              <Link href="/dashboard" className="ml-5 mr-5 btn btn-ghost">
+                <p className="">{user.user_metadata.firstname}</p>
+              </Link>
+            ) : (
+              <Link href="/login" className="btn btn-ghost btn-circle">
+                <span className="material-icons">person</span>
+              </Link>
+            )}
           </div>
         </div>
       </div>
