@@ -12,6 +12,9 @@ const nextConfig = {
             },
             {
                 hostname: "firebasestorage.googleapis.com",
+            },
+            {
+                hostname: "uhnwbbygjqehbyunalva.supabase.co",
             }
         ]
     }

@@ -1,11 +1,12 @@
 // slices/productsSlice.js
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 import axios from 'axios';
+import { supabase } from '../utils/supabase/supabaseClient';
 
 // Async thunk to fetch products
 export const fetchProducts = createAsyncThunk('products/fetchProducts', async () => {
-  const response = await axios.get('http://localhost:8000/products'); 
-  return response.data;
+  const products = await supabase.from('products').select('*'); 
+  return products;
 });
 
 const productsSlice = createSlice({

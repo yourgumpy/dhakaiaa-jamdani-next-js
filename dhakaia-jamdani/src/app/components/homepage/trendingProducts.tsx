@@ -1,26 +1,20 @@
 "use client";
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import ProductCard from "../productCard";
-import { useDispatch, useSelector } from "react-redux";
-import { fetchProducts } from "@/app/slices/productSlices";
+import { getAllProducts } from "@/app/Admin/AllProducts/action";
 
 const TrendingProducts = () => {
-  const dispatch = useDispatch();
-  const { products, status, error } = useSelector(
-    (state: any) => state.products
-  );
-
-  useEffect(() => {
-    dispatch(fetchProducts() as any);
-  }, [dispatch]);
-
-  if (status === "loading") {
-    return <div>Loading...</div>;
-  }
-
-  if (status === "failed") {
-    return <div>Error: {error}</div>;
-  }
+  const [products, setProducts] = useState<any[]>([]);
+  
+      useEffect(() => {
+          const fetchProducts = async () => {
+              const prods = await getAllProducts();
+              if (prods) {
+                  setProducts(prods);
+              }
+          };
+          fetchProducts();
+      },[products])
 
 
   return (

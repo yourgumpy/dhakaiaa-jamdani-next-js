@@ -1,10 +1,10 @@
 "use client"
 import React, { useState } from "react";
-import { supabase } from "@/app/utils/supabase/supabaseClient"
 import Link from "next/link";
+import { signupUser } from "./action";
 
 export default function Signup() {
-  
+
   const [firstname, setFirstname] = useState("");
   const [lastname, setLastname] = useState("");
   const [email, setEmail] = useState("");
@@ -13,19 +13,12 @@ export default function Signup() {
 
   const handleSignUp = async (e: any) => {
     e.preventDefault();
-    const { data, error} = await supabase.auth.signUp({
-      email,
-      password,
-      options:{
-        data: {firstname, lastname}
-      }
-    })
-
-    if(!error){
+    try {
+      await signupUser({ email, password, firstname, lastname });
       setIsSigningUp(true);
+    } catch (error: any) {
+      alert(error.message);
     }
-
-    console.log(data, error);
   };
 
   return (

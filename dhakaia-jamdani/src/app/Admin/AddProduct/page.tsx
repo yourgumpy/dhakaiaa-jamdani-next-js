@@ -4,8 +4,8 @@ import Image from "next/image";
 import React, { useState } from "react";
 import clsx from "clsx";
 import Sidebar from "@/app/components/Admin/Sidebar";
-import axios from "axios";
 import loader from "@/app/components/loaders/loader";
+import { addProduct } from "./action";
 
 const Page = () => {
   const { theme } = useTheme();
@@ -49,27 +49,17 @@ const Page = () => {
         formData.append("images", photo);
       });
 
-      const response = await axios.post(
-        "http://localhost:8000/products",
-        formData,
-        {
-          headers: {
-            "Content-Type": "multipart/form-data",
-          },
-        }
-      );
+      await addProduct(formData)
 
-      if (response.status === 201) {
-        // alert("Product added successfully!");
-        // Reset form fields if needed
-        setTitle("");
-        setDescription("");
-        setSelectedPhotos([]);
-        setPrice(0);
-        setDiscount(0);
-        setLoading(false);
-        console.log("done");
-      }
+      alert("Product added successfully!");
+      // Reset form fields if needed
+      setTitle("");
+      setDescription("");
+      setSelectedPhotos([]);
+      setPrice(0);
+      setDiscount(0);
+      setLoading(false);
+      console.log("done");
     } catch (error) {
       console.error("Error adding product:", error);
       setLoading(false);

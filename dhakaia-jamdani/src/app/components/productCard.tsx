@@ -11,7 +11,7 @@ const ProductCard = ({ props }: { props: any }) => {
           height={300}
           width={400}
           style={{ objectFit: "cover" }}
-          src={product.imageUrl[1].downloadURL}
+          src={product.image_urls[1]}
           alt={product.title}
           className="max-h-96"
         />

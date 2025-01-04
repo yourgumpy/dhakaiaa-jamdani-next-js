@@ -6,8 +6,7 @@ import { faSun, faMoon } from "@fortawesome/free-solid-svg-icons";
 import { useState } from "react";
 import { useRef } from "react";
 import { useEffect } from "react";
-import { getUser } from "@/app/auth/getUser";
-import { User } from "@supabase/supabase-js";
+import {  UserProfile, userProfile } from "@/app/auth/getUser";
 
 const Navbar = ({
   isChecked,
@@ -16,7 +15,7 @@ const Navbar = ({
   isChecked: boolean;
   onToggle: () => void;
 }) => {
-  const [user, setUser] = useState<User | null>(null);
+  const [user, setUser] = useState<UserProfile | null>(null);
   const [searchOpen, setSearchOpen] = useState(false);
   const searchInputRef = useRef<HTMLInputElement>(null);
   const handleSearchToggle = () => {
@@ -25,7 +24,7 @@ const Navbar = ({
 
   useEffect(() => {
     const fetchUser = async () => {
-      const user = await getUser();
+      const user = await userProfile();
       // console.log(user);
       setUser(user);
     };
@@ -200,7 +199,7 @@ const Navbar = ({
             </label>
             {user ? (
               <Link href="/dashboard" className="ml-5 mr-5 btn btn-ghost">
-                <p className="">{user.user_metadata.firstname}</p>
+                <p className="">{user?.firstname}</p>
               </Link>
             ) : (
               <Link href="/login" className="btn btn-ghost btn-circle">
