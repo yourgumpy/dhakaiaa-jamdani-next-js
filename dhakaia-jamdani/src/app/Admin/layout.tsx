@@ -1,7 +1,5 @@
 import React from "react";
 import Sidebar from "../components/Admin/Sidebar";
-import Image from "next/image";
-import { useTheme } from "../context/ThemeContext";
 
 const layout = ({ children }: { children: React.ReactNode }) => {
   return (

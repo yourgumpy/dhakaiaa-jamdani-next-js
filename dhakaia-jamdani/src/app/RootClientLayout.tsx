@@ -5,9 +5,10 @@ import { Inter } from "next/font/google";
 import Navbar from "./components/navbar";
 import "./globals.css";
 import Footer from "./components/footer";
-import { useTheme } from "./context/ThemeContext"; // Ensure the path to ThemeContext is correct
+import { useTheme } from "./context/ThemeContext";
 import { Provider } from "react-redux";
 import store from "./store/store";
+import FloatingCart from "./components/cart";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -23,22 +24,23 @@ export default function RootClientLayout({
   }, [theme]);
 
   return (
-    <Provider store={store}>
-      <html lang="en">
+    <html lang="en">
       <head>
-      <link
+        <link
           rel="stylesheet"
           href="https://fonts.googleapis.com/icon?family=Material+Icons"
         />
       </head>
       <body className={inter.className}>
-        <div>
-          <Navbar isChecked={theme === 'light'} onToggle={toggleTheme} />
-        </div>
-        {children}
-        <Footer />
+        <Provider store={store}>
+          <div>
+            <Navbar isChecked={theme === 'light'} onToggle={toggleTheme} />
+            {children}
+            <FloatingCart />
+            <Footer />
+          </div>
+        </Provider>
       </body>
     </html>
-    </Provider>
   );
 }

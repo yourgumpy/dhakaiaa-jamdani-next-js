@@ -8,23 +8,30 @@ export interface UserProfile {
 
 export async function getUserData() {
   const { data, error } = await supabase.auth.getUser();
+  
   if (error) {
+    // If there's an error fetching the user, just return null
     console.error("Error fetching user:", error);
     return null;
   }
+  
+  // If no user is logged in, return null
+  if (!data?.user) {
+    return null;
+  }
+
   return data.user;
 }
 
 export async function userProfile() {
   try {
-    // Await the user object from getUser()
     const user = await getUserData();
     if (!user) {
-      console.error("No user found.");
+      console.log("No user logged in."); // Handle case when no user is logged in
       return null;
     }
 
-    // Query the profiles table
+    // Fetch the user profile from the 'profiles' table
     const { data, error } = await supabase
       .from("profiles")
       .select("*")
@@ -36,7 +43,7 @@ export async function userProfile() {
       return null;
     }
 
-    return data;
+    return data; // Return profile data if available
   } catch (error) {
     console.error("Unexpected error:", error);
     return null;

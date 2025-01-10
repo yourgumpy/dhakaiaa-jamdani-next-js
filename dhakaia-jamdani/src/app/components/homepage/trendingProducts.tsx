@@ -1,20 +1,19 @@
 "use client";
 import React, { useEffect, useState } from "react";
 import ProductCard from "../productCard";
-import { getAllProducts } from "@/app/Admin/AllProducts/action";
+import { useDispatch, useSelector } from "react-redux";
+import { fetchProducts } from "@/app/slices/productSlices";
+
 
 const TrendingProducts = () => {
-  const [products, setProducts] = useState<any[]>([]);
+  const dispatch = useDispatch();
+  const { products, status, error } = useSelector((state: any) => state.products);
   
-      useEffect(() => {
-          const fetchProducts = async () => {
-              const prods = await getAllProducts();
-              if (prods) {
-                  setProducts(prods);
-              }
-          };
-          fetchProducts();
-      },[products])
+  useEffect(() => {
+    if (status === 'idle') {
+      dispatch(fetchProducts() as any); 
+    }
+  }, [status, dispatch]);
 
 
   return (

@@ -6,7 +6,8 @@ import { faSun, faMoon } from "@fortawesome/free-solid-svg-icons";
 import { useState } from "react";
 import { useRef } from "react";
 import { useEffect } from "react";
-import {  UserProfile, userProfile } from "@/app/auth/getUser";
+import { UserProfile, userProfile } from "@/app/auth/getUser";
+import { supabase } from "../utils/supabase/supabaseClient";
 
 const Navbar = ({
   isChecked,
@@ -18,18 +19,24 @@ const Navbar = ({
   const [user, setUser] = useState<UserProfile | null>(null);
   const [searchOpen, setSearchOpen] = useState(false);
   const searchInputRef = useRef<HTMLInputElement>(null);
+
   const handleSearchToggle = () => {
     setSearchOpen(!searchOpen);
   };
 
   useEffect(() => {
     const fetchUser = async () => {
-      const user = await userProfile();
-      // console.log(user);
-      setUser(user);
+      const userData = await userProfile();
+      setUser(userData);
     };
 
-    fetchUser();
+    supabase.auth.onAuthStateChange((event, session) => {
+      if (session) {
+        fetchUser();
+      } else {
+        setUser(null);
+      }
+    });
   }, []);
 
   useEffect(() => {
@@ -47,6 +54,7 @@ const Navbar = ({
       document.removeEventListener("mousedown", handleClickOutside);
     };
   }, []);
+  
 
   return (
     <div className="relative">
@@ -172,6 +180,7 @@ const Navbar = ({
               />
             </svg>
           </button>
+
           <div className="hidden md:flex items-center space-x-2 ">
             {/* Toggle dark/light mode for desktop */}
             <label
@@ -199,7 +208,7 @@ const Navbar = ({
             </label>
             {user ? (
               <Link href="/dashboard" className="ml-5 mr-5 btn btn-ghost">
-                <p className="">{user?.firstname}</p>
+                <p>{user.firstname}</p>
               </Link>
             ) : (
               <Link href="/login" className="btn btn-ghost btn-circle">
