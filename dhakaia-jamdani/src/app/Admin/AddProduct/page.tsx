@@ -14,7 +14,7 @@ const Page = () => {
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
   const [category, setCategory] = useState("Sharee");
-  const [availability, setAvailability] = useState("In Stock");
+  const [availability, setAvailability] = useState("in-stock");
   const [price, setPrice] = useState(0);
   const [discount, setDiscount] = useState(0);
 
@@ -193,8 +193,8 @@ const Page = () => {
                     className="select w-full"
                     onChange={(e) => setAvailability(e.target.value)}
                   >
-                    <option>In Stock</option>
-                    <option>Out of Stock</option>
+                    <option value="in-stock">In Stock</option>
+                    <option value="out-of-stock">Out of Stock</option>
                   </select>
                 </div>
               </div>

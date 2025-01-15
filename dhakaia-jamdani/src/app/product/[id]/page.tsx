@@ -6,10 +6,24 @@ import Link from "next/link";
 import { useParams } from "next/navigation";
 import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { ShoppingCart, ArrowLeft, Star } from "lucide-react";
+import { ShoppingCart, ArrowLeft, Star, Heart } from "lucide-react";
 import { addToCart, addToFavorites } from "@/app/slices/cartSlice";
+import { User } from "@supabase/supabase-js";
+import { getUserData } from "@/app/auth/getUser";
 
 const Page = () => {
+  const [data, setData] = useState<User | null>(null);
+  const { favorites } = useSelector((state: any) => state.cart);
+
+  useEffect(() => {
+    const fetchUser = async () => {
+      const user = await getUserData();
+
+      console.log(user);
+      setData(user);
+    };
+    fetchUser();
+  }, []);
   const dispatch = useDispatch();
   const params = useParams();
   const id = Number(params.id);
@@ -18,19 +32,11 @@ const Page = () => {
     (state: any) => state.products
   );
   const product = products?.find((product: any) => product.id === id);
+  const isFavorite = favorites.includes(product?.id);
   const [rating, setRating] = useState(0);
 
   const handleRatingChange = (event: any) => {
     setRating(parseInt(event.target.value, 10));
-  };
-
-  const handleAddToCart = () => {
-    console.log(product);
-    dispatch(addToCart(product));
-  };
-
-  const handleAddToFavorites = () => {
-    dispatch(addToFavorites(product));
   };
 
   useEffect(() => {
@@ -78,7 +84,7 @@ const Page = () => {
           Back to shop
         </Link>
 
-        <div className="grid lg:grid-cols-2 gap-8 lg:gap-12">
+        <div className="grid lg:grid-cols-2 gap-8 lg:gap-12 pb-10">
           {/* Image Section */}
           <div className="space-y-4">
             <div className="aspect-square relative rounded-lg overflow-hidden bg-gray-100">
@@ -167,7 +173,7 @@ const Page = () => {
             </div>
 
             <div className="flex items-center">
-              {product.availability === "In Stock" ? (
+              {product.availability === "in-stock" ? (
                 <div className="flex items-center text-green-600">
                   <div className="w-2 h-2 bg-green-600 rounded-full mr-2"></div>
                   In Stock
@@ -180,22 +186,44 @@ const Page = () => {
               )}
             </div>
 
-            <button
-              
-              className={`w-full sm:w-auto px-8 py-4 rounded-lg flex items-center justify-center gap-2 text-white font-medium transition-colors ${
-                product.availability === "In Stock"
-                  ? "bg-blue-600 hover:bg-blue-700 cursor-pointer"
-                  : "bg-gray-400 cursor-not-allowed"
-              }`}
-              disabled={product.availability === "In Stock" ? false : true}
-              onClick={() => {
-                console.log(product);
-                dispatch(addToCart(product));
-              }}
-            >
-              <ShoppingCart className="w-5 h-5" />
-              Add to cart
-            </button>
+            <div className="flex gap-4 lg:pt-20">
+              <button
+                className={`w-full sm:w-auto px-8 py-4 rounded-lg flex items-center justify-center gap-2 text-white font-medium transition-colors ${
+                  product.availability === "in-stock"
+                    ? "bg-green-600 hover:bg-green-700 cursor-pointer"
+                    : "bg-gray-400 cursor-not-allowed"
+                }`}
+                disabled={product.availability === "in-stock" ? false : true}
+                onClick={() => {
+                  console.log(product);
+                  dispatch(addToCart(product));
+                }}
+              >
+                <ShoppingCart className="w-5 h-5" />
+                Add to cart
+              </button>
+
+              <button
+                className={`w-full sm:w-auto px-8 py-4 rounded-lg flex items-center justify-center gap-2 text-white font-medium transition-colors ${
+                  data?.role === "authenticated"
+                    ? isFavorite
+                      ? "bg-red-600 hover:bg-red-700"
+                      : "bg-blue-600 hover:bg-blue-700"
+                    : "bg-gray-400"
+                } cursor-${
+                  data?.role === "authenticated" ? "pointer" : "not-allowed"
+                }`}
+                disabled={data?.role !== "authenticated"}
+                onClick={() => {
+                  dispatch(addToFavorites(product));
+                }}
+              >
+                <Heart
+                  className={`w-5 h-5 ${isFavorite ? "fill-white" : ""}`}
+                />
+                {isFavorite ? "Remove from Favorites" : "Add to Favorites"}
+              </button>
+            </div>
           </div>
         </div>
       </div>

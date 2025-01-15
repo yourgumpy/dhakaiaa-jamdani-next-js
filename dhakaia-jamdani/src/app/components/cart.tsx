@@ -2,31 +2,50 @@
 
 import React, { useState, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { removeFromCart, clearCart } from "@/app/slices/cartSlice";
+import { removeFromCart, clearCart, initializeFromStorage } from "@/app/slices/cartSlice";
+import { fetchProducts } from "@/app/slices/productSlices"; // Make sure you have this action
 import { Product } from "@/app/slices/productSlices";
-import { X, ShoppingCart, SidebarClose } from "lucide-react";
+import { X, ShoppingCart, SidebarClose, Loader } from "lucide-react";
+import Link from "next/link";
 
 export default function FloatingCart() {
   const dispatch = useDispatch();
   const { cart } = useSelector((state: any) => state.cart);
-  const { products } = useSelector((state: any) => state.products);
+  const { products, status } = useSelector((state: any) => state.products);
   const [cartOpen, setCartOpen] = useState(false);
   const [isMounted, setIsMounted] = useState(false);
 
   useEffect(() => {
     setIsMounted(true);
-  }, []);
+    // Initialize cart from localStorage
+    dispatch(initializeFromStorage());
+    // Fetch products if not already loaded
+    if (!products || products.length === 0) {
+      dispatch(fetchProducts() as any);
+    }
+  }, [dispatch]);
 
   if (!isMounted) return null;
 
-  // Map cart item IDs to full product details
+  // Handle loading state
+  if (status === 'loading' || !products) {
+    return (
+      <div className="fixed bottom-8 right-8 z-[100]">
+        <button className="relative bg-primary hover:bg-primary/90 text-white p-4 rounded-full shadow-lg">
+          <Loader className="w-6 h-6 animate-spin" />
+        </button>
+      </div>
+    );
+  }
+
+  // Map cart item IDs to full product details with null checks
   const cartItems = cart.map((item: { id: number; quantity: number }) => {
-    const product = products.find((p: Product) => p.id === item.id);
-    return { ...product, quantity: item.quantity };
-  });
+    const product = products?.find((p: Product) => p.id === item.id);
+    return product ? { ...product, quantity: item.quantity } : null;
+  }).filter(Boolean); // Remove null items
 
   const totalPrice = cartItems.reduce(
-    (total: number, item: any) => total + item.price * item.quantity,
+    (total: number, item: any) => total + (item?.price || 0) * (item?.quantity || 0),
     0
   );
 
@@ -146,9 +165,9 @@ export default function FloatingCart() {
                 </span>
               </div>
               <div className="space-y-2">
-                <button className="w-full bg-primary hover:bg-primary/90 text-white py-2 rounded-md transition-colors">
+                <Link href='/checkout'> <button className="w-full bg-primary hover:bg-primary/90 text-white py-2 rounded-md transition-colors">
                   Checkout
-                </button>
+                </button></Link>
                 <button
                   onClick={() => dispatch(clearCart())}
                   className="w-full bg-red-500 hover:bg-red-600 text-white py-2 rounded-md transition-colors"
