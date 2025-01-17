@@ -1,4 +1,5 @@
 "use client";
+import { deleteProduct } from "@/app/Admin/AddProduct/action";
 import React, { useState, useEffect } from "react";
 
 interface Product {
@@ -25,18 +26,18 @@ const ProductModal: React.FC<ProductModalProps> = ({
   isOpen,
   onClose,
   onImageDelete,
-  onProductUpdate
+  onProductUpdate,
 }) => {
   const initialFormState = {
     title: "",
     description: "",
     category: "",
-    availability: "in-stock", 
+    availability: "in-stock",
     price: 0,
     discount: 0,
     image_urls: [] as string[],
     images: [] as File[],
-    deletedImages: [] as string[]
+    deletedImages: [] as string[],
   };
   const [formData, setFormData] = useState(initialFormState);
   const [isEditing, setIsEditing] = useState(false);
@@ -60,12 +61,12 @@ const ProductModal: React.FC<ProductModalProps> = ({
 
   useEffect(() => {
     // Create preview URLs for newly added images
-    const urls = formData.images.map(file => URL.createObjectURL(file));
+    const urls = formData.images.map((file) => URL.createObjectURL(file));
     setPreviewUrls(urls);
 
     // Cleanup function to revoke object URLs
     return () => {
-      urls.forEach(url => URL.revokeObjectURL(url));
+      urls.forEach((url) => URL.revokeObjectURL(url));
     };
   }, [formData.images]);
 
@@ -75,61 +76,64 @@ const ProductModal: React.FC<ProductModalProps> = ({
     >
   ) => {
     const { name, value } = e.target;
-    setFormData(prev => ({
+    setFormData((prev) => ({
       ...prev,
-      [name]: name === 'price' ? parseFloat(value) : 
-              name === 'discount' ? parseInt(value) : 
-              value
+      [name]:
+        name === "price"
+          ? parseFloat(value)
+          : name === "discount"
+          ? parseInt(value)
+          : value,
     }));
   };
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files) {
-      setFormData(prev => ({
+      setFormData((prev) => ({
         ...prev,
-        images: [...prev.images, ...Array.from(e.target.files!)]
+        images: [...prev.images, ...Array.from(e.target.files!)],
       }));
     }
   };
 
   const handleImageDelete = async (imageUrl: string) => {
     if (formData.image_urls.includes(imageUrl)) {
-      setFormData(prev => ({
+      setFormData((prev) => ({
         ...prev,
         deletedImages: [...prev.deletedImages, imageUrl],
-        image_urls: prev.image_urls.filter(url => url !== imageUrl)
+        image_urls: prev.image_urls.filter((url) => url !== imageUrl),
       }));
     }
   };
 
   const handleRemoveNewImage = (index: number) => {
-    setFormData(prev => ({
+    setFormData((prev) => ({
       ...prev,
-      images: prev.images.filter((_, i) => i !== index)
+      images: prev.images.filter((_, i) => i !== index),
     }));
   };
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     setIsSaving(true);
-    
+
     try {
       await onProductUpdate(product.id.toString(), formData);
       setIsEditing(false);
       onClose();
     } catch (error) {
-      console.error('Error updating product:', error);
+      console.error("Error updating product:", error);
     } finally {
       setIsSaving(false);
     }
   };
 
   const handleCancel = () => {
-    setFormData(prev => ({
+    setFormData((prev) => ({
       ...prev,
       deletedImages: [],
       images: [],
-      image_urls: product.image_urls || []
+      image_urls: product.image_urls || [],
     }));
     setIsEditing(false);
   };
@@ -239,7 +243,7 @@ const ProductModal: React.FC<ProductModalProps> = ({
           {/* Image Section */}
           <div className="mt-6">
             <label className="label">Product Images</label>
-            
+
             {/* Existing Images */}
             <div className="grid grid-cols-2 md:grid-cols-3 gap-4 mb-4">
               {formData.image_urls.map((url, index) => (
@@ -302,14 +306,25 @@ const ProductModal: React.FC<ProductModalProps> = ({
 
           {/* Action Buttons */}
           <div className="modal-action">
+            {
+              !isEditing ? (
+                <button 
+                type="button" 
+                className="btn btn-error"
+                onClick={() => deleteProduct(product.id)}
+                >
+                  Delete Product
+                </button>
+              ) :(null)
+            }
             {!isEditing ? (
-              <button
-                type="button"
-                className="btn btn-primary"
-                onClick={() => setIsEditing(true)}
-              >
-                Edit Product
-              </button>
+                <button
+                  type="button"
+                  className="btn btn-primary"
+                  onClick={() => setIsEditing(true)}
+                >
+                  Edit Product
+                </button>
             ) : (
               <>
                 <button
@@ -320,8 +335,8 @@ const ProductModal: React.FC<ProductModalProps> = ({
                 >
                   Cancel
                 </button>
-                <button 
-                  type="submit" 
+                <button
+                  type="submit"
                   className="btn btn-primary"
                   disabled={isSaving}
                 >
@@ -331,7 +346,7 @@ const ProductModal: React.FC<ProductModalProps> = ({
                       Saving...
                     </>
                   ) : (
-                    'Save Changes'
+                    "Save Changes"
                   )}
                 </button>
               </>
