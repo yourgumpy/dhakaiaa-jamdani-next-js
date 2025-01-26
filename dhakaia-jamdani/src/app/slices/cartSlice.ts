@@ -1,6 +1,7 @@
-// cartSlice.ts
-import { createSlice, PayloadAction } from "@reduxjs/toolkit";
+import { createSlice, PayloadAction, createAsyncThunk } from "@reduxjs/toolkit";
 import { Product } from "./productSlices";
+import { supabase } from "@/app/utils/supabase/supabaseClient";
+import { getUserData } from "../auth/getUser";
 
 interface CartState {
   cart: { id: number; quantity: number }[];
@@ -14,27 +15,80 @@ const initialState: CartState = {
   isInitialized: false,
 };
 
-const loadCartFromLocalStorage = () => {
-  if (typeof window !== "undefined") {
-    const cart = localStorage.getItem("cart");
-    const favorites = localStorage.getItem("favorites");
-    console.log(cart, favorites);
-    return {
-      cart: cart ? JSON.parse(cart) : [],
-      favorites: favorites ? JSON.parse(favorites) : [],
-    };
+// Async Thunks for backend synchronization
+export const syncCart = createAsyncThunk(
+  "cart/syncCart",
+  async (_, { getState }) => {
+    const state = getState() as { cart: CartState };
+    const user = await getUserData();
+
+    if (user) {
+      const productIds = state.cart.cart;
+      const { error } = await supabase
+        .from("cart")
+        .upsert(
+          { uid: user.id, products: productIds },
+          { onConflict: "uid" }
+        );
+
+      if (error) {
+        console.error("Error syncing cart with backend:", error);
+        throw error;
+      }
+    }
   }
-  return { cart: [], favorites: [] };
-};
+);
+
+export const syncFavorites = createAsyncThunk(
+  "cart/syncFavorites",
+  async (_, { getState }) => {
+    const state = getState() as { cart: CartState };
+    const user = await getUserData();
+
+    if (user) {
+      const { data, error } = await supabase.from("favorites").upsert(
+        {
+          uid: user.id,
+          product_ids: state.cart.favorites,
+        },
+        {
+          onConflict: "uid",
+        }
+      );
+
+      if (error) {
+        console.log("Detailed Sync Error:", {
+          message: error.message,
+          details: error.details,
+          code: error.code,
+        });
+        throw error;
+      }
+    }
+  }
+);
 
 const cartSlice = createSlice({
   name: "cart",
-  initialState: initialState,
+  initialState,
   reducers: {
     initializeFromStorage: (state) => {
       if (!state.isInitialized && typeof window !== "undefined") {
-        const cart = localStorage.getItem("cart");
-        const favorites = localStorage.getItem("favorites");
+        let cart = localStorage.getItem("cart");
+        let favorites = localStorage.getItem("favorites");
+        const syncCartFav = async () => {
+          const user = await getUserData();
+          if(user){
+            const { data } = await supabase.from('cart').select('products').eq('uid', user.id).single();
+            cart = data?.products || [];
+            localStorage.setItem("cart", JSON.stringify(cart));
+
+            const { data: favData } = await supabase.from('favorites').select('product_ids').eq('uid', user.id).single();
+            favorites = favData?.product_ids || [];
+            localStorage.setItem("favorites", JSON.stringify(favorites));
+          }
+        }
+        syncCartFav();
         state.cart = cart ? JSON.parse(cart) : [];
         state.favorites = favorites ? JSON.parse(favorites) : [];
         state.isInitialized = true;
@@ -49,6 +103,7 @@ const cartSlice = createSlice({
       } else {
         state.cart.push({ id: product.id, quantity: 1 });
       }
+
       if (typeof window !== "undefined") {
         localStorage.setItem("cart", JSON.stringify(state.cart));
       }
@@ -85,7 +140,6 @@ const cartSlice = createSlice({
         localStorage.setItem("cart", JSON.stringify(state.cart));
       }
     },
-
     decrementQuantity: (state, action: PayloadAction<number>) => {
       const productId = action.payload;
       const item = state.cart.find(
@@ -96,6 +150,9 @@ const cartSlice = createSlice({
         localStorage.setItem("cart", JSON.stringify(state.cart));
       }
     },
+  },
+  extraReducers: (builder) => {
+    // Optional: Add handlers for async thunk pending/fulfilled/rejected states if needed
   },
 });
 

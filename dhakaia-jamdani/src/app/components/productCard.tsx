@@ -1,25 +1,27 @@
 import React, { useState } from 'react';
 import Image from "next/image";
 import Link from "next/link";
-import { addToCart, addToFavorites } from "../slices/cartSlice";
+import { addToCart, addToFavorites, syncCart, syncFavorites } from "../slices/cartSlice";
 import { useDispatch } from "react-redux";
+import { AppDispatch } from "@/app/store/store";
 
 const ProductCard = ({ props }: { props: any }) => {
-  const dispatch = useDispatch();
+  const dispatch = useDispatch<AppDispatch>();
   const { product } = props;
   const pPrice = product.price - (product.price * product.discount) / 100;
   const [showSecondImage, setShowSecondImage] = useState(false);
   const [isLiked, setIsLiked] = useState(false);
 
-  const handleAddToFavorites = () => {
+  const handleAddToFavorites = async () => {
     setIsLiked(!isLiked);
     dispatch(addToFavorites(product));
+    await dispatch(syncFavorites()).unwrap();
   };
   
-  const handleAddToCart = () => {
+  const handleAddToCart = async () => {
     dispatch(addToCart(product));
+    await dispatch(syncCart()).unwrap();
   };
-
   return (
     <div 
       className="relative card card-compact bg-base-100 md:h-[470px] h-[350px] md:max-w-[380px] max-w-[320px] min-w-[280px] min-h-[270px] shadow-xl transition-all duration-300 hover:scale-105 hover:shadow-2xl"

@@ -11,7 +11,7 @@ export async function getUserData() {
   
   if (error) {
     // If there's an error fetching the user, just return null
-    console.error("Error fetching user:", error);
+    // console.log("Error fetching user:", error);
     return null;
   }
   
@@ -20,6 +20,7 @@ export async function getUserData() {
     return null;
   }
 
+  // console.log("User data:", data.user);
   return data.user;
 }
 
