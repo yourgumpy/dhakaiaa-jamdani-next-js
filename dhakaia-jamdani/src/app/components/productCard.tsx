@@ -8,6 +8,7 @@ import { AppDispatch } from "@/app/store/store";
 const ProductCard = ({ props }: { props: any }) => {
   const dispatch = useDispatch<AppDispatch>();
   const { product } = props;
+  console.log("product", product);
   const pPrice = product.price - (product.price * product.discount) / 100;
   const [showSecondImage, setShowSecondImage] = useState(false);
   const [isLiked, setIsLiked] = useState(false);

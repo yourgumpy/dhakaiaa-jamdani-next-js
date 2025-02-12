@@ -4,7 +4,7 @@ import { supabase } from "@/app/utils/supabase/supabaseClient";
 import { getUserData } from "../auth/getUser";
 
 interface CartState {
-  cart: { id: number; quantity: number }[];
+  cart: { id: number; quantity: number, price: number }[];
   favorites: number[];
   isInitialized?: boolean;
 }
@@ -101,7 +101,7 @@ const cartSlice = createSlice({
       if (existingProduct) {
         existingProduct.quantity += 1;
       } else {
-        state.cart.push({ id: product.id, quantity: 1 });
+        state.cart.push({ id: product.id, quantity: 1, price: product.price });
       }
 
       if (typeof window !== "undefined") {
@@ -111,7 +111,7 @@ const cartSlice = createSlice({
     removeFromCart: (state, action: PayloadAction<number>) => {
       const productId = action.payload;
       state.cart = state.cart.filter(
-        (item: { id: number; quantity: number }) => item.id !== productId
+        (item: { id: number; quantity: number, price: number }) => item.id !== productId
       );
       localStorage.setItem("cart", JSON.stringify(state.cart));
     },
@@ -133,7 +133,7 @@ const cartSlice = createSlice({
     incrementQuantity: (state, action: PayloadAction<number>) => {
       const productId = action.payload;
       const item = state.cart.find(
-        (item: { id: number; quantity: number }) => item.id === productId
+        (item: { id: number; quantity: number, price: number }) => item.id === productId
       );
       if (item) {
         item.quantity += 1;
@@ -143,7 +143,7 @@ const cartSlice = createSlice({
     decrementQuantity: (state, action: PayloadAction<number>) => {
       const productId = action.payload;
       const item = state.cart.find(
-        (item: { id: number; quantity: number }) => item.id === productId
+        (item: { id: number; quantity: number, price: number }) => item.id === productId
       );
       if (item && item.quantity > 1) {
         item.quantity -= 1;

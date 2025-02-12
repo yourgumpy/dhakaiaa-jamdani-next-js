@@ -100,3 +100,41 @@
     position: relative;
   }
   
+  .price_container input[type="text"] {
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    padding: 4px 8px;
+    width: 100px;
+    font-size: 14px;
+  }
+  
+  .price_container input[type="text"]:focus {
+    outline: none;
+    border-color: #4f46e5;
+    box-shadow: 0 0 0 1px #4f46e5;
+  }
+  
+  .price_container .flex {
+    display: flex;
+  }
+  
+  .price_container .items-center {
+    align-items: center;
+  }
+  
+  .price_container .justify-between {
+    justify-content: space-between;
+  }
+  
+  .price_container .mb-4 {
+    margin-bottom: 1rem;
+  }
+  
+  .price_container .mr-2 {
+    margin-right: 0.5rem;
+  }
+  
+  .price_container .mx-4 {
+    margin-left: 1rem;
+    margin-right: 1rem;
+  }

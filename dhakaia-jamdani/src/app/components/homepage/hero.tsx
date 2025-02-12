@@ -47,7 +47,6 @@ const Hero = () => {
           </motion.p>
         </motion.div>
 
-
         <div className="relative hidden md:block">
           <motion.div
             initial={{ opacity: 0, x: 100 }}
@@ -55,13 +54,23 @@ const Hero = () => {
             transition={{ duration: 1 }}
             className="relative z-30"
           >
-            <Image
-              className="rounded-md m-48"
-              src="/images/sharee_1.jpg"
-              width={300}
-              height={400}
-              alt="Panjabi"
-            />
+            <div className="relative">
+              <Image
+                className="rounded-md m-48"
+                src="/images/sharee_1.jpg"
+                width={300}
+                height={400}
+                alt="Sharee"
+              />
+              <motion.button
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.5, delay: 1.2 }}
+                className="absolute top-10 right-1/4 transform -translate-x-1/2 bg-[#203147] text-white px-4 py-2 rounded-lg font-semibold shadow-lg hover:bg-yellow-200 transition-all duration-300"
+              >
+                Sharee
+              </motion.button>
+            </div>
           </motion.div>
           <motion.div
             initial={{ opacity: 0, x: 100 }}
@@ -69,13 +78,23 @@ const Hero = () => {
             transition={{ duration: 1, delay: 0.2 }}
             className="absolute bottom-20 right-10 z-40"
           >
-            <Image
-              className="rounded-md"
-              src="/images/panjabi_1.jpg"
-              width={250}
-              height={350}
-              alt="Sharee"
-            />
+            <div className="relative">
+              <Image
+                className="rounded-md"
+                src="/images/panjabi_1.jpg"
+                width={250}
+                height={350}
+                alt="Panjabi"
+              />
+              <motion.button
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.5, delay: 1.4 }}
+                className="absolute bottom-4 -right-10 transform -translate-x-1/2 bg-[#6d3737] text-white px-4 py-2 rounded-lg font-semibold shadow-lg hover:bg-yellow-200 transition-all duration-300"
+              >
+                Panjabi
+              </motion.button>
+            </div>
           </motion.div>
           <motion.div
             initial={{ opacity: 0, x: 100 }}
@@ -83,13 +102,23 @@ const Hero = () => {
             transition={{ duration: 1, delay: 0.4 }}
             className="absolute bottom-20 left-10 z-10"
           >
-            <Image
-              className="rounded-md"
-              src="/images/threepcs_1.jpg"
-              width={200}
-              height={300}
-              alt="Threepcs"
-            />
+            <div className="relative">
+              <Image
+                className="rounded-md"
+                src="/images/threepcs_1.jpg"
+                width={200}
+                height={300}
+                alt="Three Piece"
+              />
+              <motion.button
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.5, delay: 1.6 }}
+                className="absolute bottom-4 -left-10 transform -translate-x-1/2 bg-yellow-300 text-red-600 px-4 py-2 rounded-lg font-semibold shadow-lg hover:bg-yellow-200 transition-all duration-300"
+              >
+                Three Piece
+              </motion.button>
+            </div>
           </motion.div>
         </div>
       </div>
