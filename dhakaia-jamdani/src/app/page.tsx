@@ -12,7 +12,7 @@ export default function Home() {
       <Section_1/>
       {/* <CategorySection/> */}
       <TrendingProducts />
-      <SocialMediaSection/>
+      {/* <SocialMediaSection/> */}
     </main>
   );
 }
