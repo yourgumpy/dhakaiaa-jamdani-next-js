@@ -23,7 +23,7 @@ const ShopSection = () => {
       category: category.length > 0 ? category : [],
       minPrice: minPrice ? parseInt(minPrice) : 0,
       maxPrice: maxPrice ? parseInt(maxPrice) : 10000,
-      availability: availability as 'in_stock' | 'out_of_stock' | undefined,
+      availability: availability as 'in-stock' | 'out-of-stock' | undefined,
     };
 
     dispatch(setFilters(newFilters));
