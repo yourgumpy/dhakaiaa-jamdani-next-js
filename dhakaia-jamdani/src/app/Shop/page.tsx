@@ -1,16 +1,15 @@
 "use client";
+import React from 'react'
+import dynamic from 'next/dynamic'
 
-import React, { Suspense } from 'react'
-import ShopSection from '../components/ShopPage/ShopSection'
+// Dynamically import ShopSection with no SSR since it uses client-side features
+const ShopSection = dynamic(() => import('../components/ShopPage/ShopSection'), {
+  ssr: false,
+  loading: () => <div>Loading...</div>
+})
 
 const Shop = () => {
-  return (
-    <div>
-      <Suspense fallback={<div>Loading...</div>}>
-        <ShopSection />
-      </Suspense>
-    </div>
-  )
+  return <ShopSection />
 }
 
 export default Shop

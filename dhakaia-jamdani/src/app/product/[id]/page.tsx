@@ -92,7 +92,8 @@ const Page = () => {
                 src={product.image_urls[imageIndex]}
                 alt={product.title}
                 className="object-cover object-center"
-                fill
+                width={800}
+                height={800}
                 sizes="(max-width: 768px) 100vw, 50vw"
                 priority
               />
@@ -111,7 +112,8 @@ const Page = () => {
                     <Image
                       src={image}
                       alt={`${product.title} - Image ${index + 1}`}
-                      fill
+                      width={80}
+                      height={80}
                       className="object-cover"
                       sizes="80px"
                     />

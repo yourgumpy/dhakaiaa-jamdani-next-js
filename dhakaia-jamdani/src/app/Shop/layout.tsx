@@ -9,7 +9,8 @@ const layout = ({ children }: { children: React.ReactNode }) => {
                 <Image
                     src="/images/Do-Shopping.png"
                     alt="Do Shopping"
-                    fill
+                    width={1920}
+                    height={1080}
                     objectFit="cover"
                     className="w-full h-full blur-sm"
                 />

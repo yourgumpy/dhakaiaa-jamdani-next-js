@@ -127,6 +127,8 @@ const cartItems = Array.isArray(cart)
                     >
                       <div className="flex gap-4">
                         <Image
+                          width={80}
+                          height={80}
                           src={
                             item.image_urls?.[1] || "/default-placeholder.png"
                           }

@@ -29,6 +29,8 @@ const Favorites = () => {
           <div key={item.id} className="card bg-base-200">
             <figure className="px-4 pt-4">
               <Image
+              width={200}
+              height={200}
                 src={item.image_urls[0]}
                 alt={item.title}
                 className="rounded-xl h-32 w-full object-cover"

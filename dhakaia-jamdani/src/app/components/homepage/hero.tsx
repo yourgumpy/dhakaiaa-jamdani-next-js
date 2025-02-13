@@ -9,9 +9,10 @@ const Hero = () => {
         src="/images/sharee_panjabi.png"
         alt="Sharee Panjabi"
         className="opacity-50 filter blur-sm"
-        fill
         style={{ objectFit: 'cover' }}
         quality={100}
+        height={600}
+        width={1920}
       />
 
       <div className="absolute inset-0 flex items-center justify-between container mx-auto px-8">
