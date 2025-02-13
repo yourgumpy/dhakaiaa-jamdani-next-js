@@ -1,3 +1,5 @@
+"use client";
+
 import React, { Suspense } from 'react'
 import ShopSection from '../components/ShopPage/ShopSection'
 
