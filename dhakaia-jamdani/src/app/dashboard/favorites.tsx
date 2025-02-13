@@ -3,6 +3,7 @@ import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { addToCart, syncCart } from "../slices/cartSlice";
 import { AppDispatch } from "../store/store";
+import Image from "next/image";
 
 const Favorites = () => {
   const dispatch = useDispatch<AppDispatch>();
@@ -27,7 +28,7 @@ const Favorites = () => {
         {favs.map((item: any) => (
           <div key={item.id} className="card bg-base-200">
             <figure className="px-4 pt-4">
-              <img
+              <Image
                 src={item.image_urls[0]}
                 alt={item.title}
                 className="rounded-xl h-32 w-full object-cover"

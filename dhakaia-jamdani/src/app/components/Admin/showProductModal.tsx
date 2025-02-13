@@ -1,5 +1,6 @@
 "use client";
 import { deleteProduct } from "@/app/Admin/AddProduct/action";
+import Image from "next/image";
 import React, { useState, useEffect } from "react";
 
 interface Product {
@@ -28,18 +29,18 @@ const ProductModal: React.FC<ProductModalProps> = ({
   onImageDelete,
   onProductUpdate,
 }) => {
-  const initialFormState = {
-    title: "",
-    description: "",
-    category: "",
-    availability: "in-stock",
-    price: 0,
-    discount: 0,
-    image_urls: [] as string[],
-    images: [] as File[],
-    deletedImages: [] as string[],
-  };
-  const [formData, setFormData] = useState(initialFormState);
+  const initialFormState = React.useMemo(() => ({
+      title: "",
+      description: "",
+      category: "",
+      availability: "in-stock",
+      price: 0,
+      discount: 0,
+      image_urls: [] as string[],
+      images: [] as File[],
+      deletedImages: [] as string[],
+    }), []);
+    const [formData, setFormData] = useState(initialFormState);
   const [isEditing, setIsEditing] = useState(false);
   const [isSaving, setIsSaving] = useState(false);
   const [previewUrls, setPreviewUrls] = useState<string[]>([]);
@@ -57,7 +58,7 @@ const ProductModal: React.FC<ProductModalProps> = ({
         image_urls: product.image_urls || [],
       });
     }
-  }, [product]);
+  }, [product, initialFormState]);
 
   useEffect(() => {
     // Create preview URLs for newly added images
@@ -248,7 +249,7 @@ const ProductModal: React.FC<ProductModalProps> = ({
             <div className="grid grid-cols-2 md:grid-cols-3 gap-4 mb-4">
               {formData.image_urls.map((url, index) => (
                 <div key={index} className="relative group">
-                  <img
+                  <Image
                     src={url}
                     alt={`Product ${index + 1}`}
                     className="w-full h-32 object-cover rounded-lg"
@@ -271,7 +272,7 @@ const ProductModal: React.FC<ProductModalProps> = ({
               <div className="grid grid-cols-2 md:grid-cols-3 gap-4 mb-4">
                 {previewUrls.map((url, index) => (
                   <div key={index} className="relative group">
-                    <img
+                    <Image
                       src={url}
                       alt={`New Image ${index + 1}`}
                       className="w-full h-32 object-cover rounded-lg"

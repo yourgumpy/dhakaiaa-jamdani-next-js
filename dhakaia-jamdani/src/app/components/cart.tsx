@@ -13,6 +13,7 @@ import { Product } from "@/app/slices/productSlices";
 import { X, ShoppingCart, SidebarClose, Loader } from "lucide-react";
 import Link from "next/link";
 import { AppDispatch, RootState } from "../store/store";
+import Image from "next/image";
 
 export default function FloatingCart() {
   const dispatch = useDispatch<AppDispatch>();
@@ -29,7 +30,7 @@ export default function FloatingCart() {
     if (!products || products.length === 0) {
       dispatch(fetchProducts() as any);
     }
-  }, [dispatch]);
+  }, [dispatch, products]);
 
   if (!isMounted) return null;
 
@@ -125,7 +126,7 @@ const cartItems = Array.isArray(cart)
                       className="p-4 hover:bg-primary/5 transition-colors"
                     >
                       <div className="flex gap-4">
-                        <img
+                        <Image
                           src={
                             item.image_urls?.[1] || "/default-placeholder.png"
                           }

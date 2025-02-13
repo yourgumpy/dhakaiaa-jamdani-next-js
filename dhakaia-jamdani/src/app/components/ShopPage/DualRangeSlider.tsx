@@ -61,10 +61,10 @@ const DualRangeSlider = () => {
   };
 
   // Debounced URL update
-  const debouncedUpdateURL = useCallback(
-    debounce((min: number, max: number) => updateURL(min, max), 500),
-    [updateURL]
-  );
+  const debouncedUpdateURL = useCallback((min: number, max: number) => {
+    const timeout = setTimeout(() => updateURL(min, max), 500);
+    return () => clearTimeout(timeout);
+  }, [updateURL]);
 
   // Handle input change for minimum value
   const handleMinInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {

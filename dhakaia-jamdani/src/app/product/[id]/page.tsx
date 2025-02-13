@@ -155,7 +155,7 @@ const Page = () => {
             </div>
 
             <p className="text-gray-600 text-lg leading-relaxed">
-              "{product.description}"
+              {product.description}
             </p>
 
             <div className="flex items-center gap-2">
