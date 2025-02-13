@@ -1,15 +1,22 @@
 "use client";
-import React from 'react'
-import dynamic from 'next/dynamic'
+import { Suspense } from 'react';
+import dynamic from 'next/dynamic';
 
-// Dynamically import ShopSection with no SSR since it uses client-side features
+// Dynamically import components that use searchParams
 const ShopSection = dynamic(() => import('../components/ShopPage/ShopSection'), {
   ssr: false,
-  loading: () => <div>Loading...</div>
-})
+  loading: () => <div>Loading products...</div>
+});
 
 const Shop = () => {
-  return <ShopSection />
-}
+  return (
+    <div>
+      {/* Wrap ALL searchParams-dependent components in Suspense */}
+      <Suspense fallback={<div>Loading filters...</div>}>
+        <ShopSection />
+      </Suspense>
+    </div>
+  );
+};
 
-export default Shop
+export default Shop;

@@ -1,5 +1,5 @@
 "use client";
-import { useCallback } from "react";
+import { Suspense, useCallback } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import DualRangeSlider from "./DualRangeSlider";
 
@@ -65,7 +65,9 @@ const LeftBar = () => {
       </div>
 
       <div className="collapse border-gray-300 bg-base-100 border-2 m-4">
-        <DualRangeSlider />
+        <Suspense fallback={<div>Loading price filter...</div>}>
+          <DualRangeSlider />
+        </Suspense>
       </div>
 
       <div className="collapse collapse-arrow border-gray-300 bg-base-100 border-2 m-4">

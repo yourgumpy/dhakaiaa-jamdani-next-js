@@ -3,6 +3,14 @@ import { useCallback, useEffect, useState, useRef } from "react";
 import { useRouter, useSearchParams } from 'next/navigation';
 import "./multiRangeSlider.css";
 
+function debounce(func: Function, wait: number) {
+  let timeout: NodeJS.Timeout;
+  return (...args: any[]) => {
+    clearTimeout(timeout);
+    timeout = setTimeout(() => func(...args), wait);
+  };
+}
+
 const DualRangeSlider = () => {
   const router = useRouter();
   const searchParams = useSearchParams();
@@ -51,19 +59,21 @@ const DualRangeSlider = () => {
     }
   }, [maxVal, getPercent]);
 
-  // Debounce function
-  const debounce = (func: Function, wait: number) => {
-    let timeout: NodeJS.Timeout;
-    return (...args: any[]) => {
-      clearTimeout(timeout);
-      timeout = setTimeout(() => func(...args), wait);
-    };
-  };
+  // // Debounce function
+  // const debounce = (func: Function, wait: number) => {
+  //   let timeout: NodeJS.Timeout;
+  //   return (...args: any[]) => {
+  //     clearTimeout(timeout);
+  //     timeout = setTimeout(() => func(...args), wait);
+  //   };
+  // };
 
   // Debounced URL update
   const debouncedUpdateURL = useCallback((min: number, max: number) => {
-    const timeout = setTimeout(() => updateURL(min, max), 500);
-    return () => clearTimeout(timeout);
+    const debouncedFn = debounce((min: number, max: number) => {
+      updateURL(min, max);
+    }, 500);
+    debouncedFn(min, max);
   }, [updateURL]);
 
   // Handle input change for minimum value
