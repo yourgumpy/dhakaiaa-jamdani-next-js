@@ -3,7 +3,7 @@ import React, { useEffect, useState } from "react";
 import ProductCard from "../productCard";
 import { useDispatch, useSelector } from "react-redux";
 import { fetchProducts } from "@/app/slices/productSlices";
-
+import Link from "next/link";
 
 const TrendingProducts = () => {
   const dispatch = useDispatch();
@@ -14,7 +14,6 @@ const TrendingProducts = () => {
       dispatch(fetchProducts() as any); 
     }
   }, [status, dispatch]);
-
 
   return (
     <div className="p-10">
@@ -29,9 +28,15 @@ const TrendingProducts = () => {
           ))}
         </div>
       </div>
+      <div className="flex justify-center mt-8">
+        <Link 
+          href="/Shop" 
+          className="bg-red-500 hover:bg-red-600 text-white font-bold py-2 px-6 rounded-lg transition-colors duration-200"
+        >
+          See More
+        </Link>
+      </div>
     </div>
-
-
   );
 };
 
