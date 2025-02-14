@@ -1,11 +1,12 @@
 "use client";
+import { Suspense } from "react";
 import { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useSearchParams, useRouter } from 'next/navigation';
 import { fetchProducts, setFilters } from "../../slices/productSlices";
 import ProductCard from "../productCard";
 
-const ShopSection = () => {
+const ShopSectionContent = () => {
   const dispatch = useDispatch();
   const router = useRouter();
   const searchParams = useSearchParams();
@@ -43,6 +44,15 @@ const ShopSection = () => {
         </div>
       </div>
     </div>
+  );
+};
+
+// Wrapper component with Suspense
+const ShopSection = () => {
+  return (
+    <Suspense fallback={<div>Loading...</div>}>
+      <ShopSectionContent />
+    </Suspense>
   );
 };
 

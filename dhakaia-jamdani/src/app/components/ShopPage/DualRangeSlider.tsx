@@ -1,5 +1,5 @@
 "use client";
-import { useCallback, useEffect, useState, useRef } from "react";
+import { useCallback, useEffect, useState, useRef, Suspense } from "react";
 import { useRouter, useSearchParams } from 'next/navigation';
 import "./multiRangeSlider.css";
 
@@ -11,7 +11,7 @@ function debounce(func: Function, wait: number) {
   };
 }
 
-const DualRangeSlider = () => {
+const DualRangeSliderComp = () => {
   const router = useRouter();
   const searchParams = useSearchParams();
   const min = 0;
@@ -196,5 +196,13 @@ const DualRangeSlider = () => {
     </div>
   );
 };
+
+const DualRangeSlider = () => {
+  return (
+    <Suspense fallback={<div>Loading...</div>}>
+      <DualRangeSliderComp />
+    </Suspense>
+  );
+}
 
 export default DualRangeSlider;

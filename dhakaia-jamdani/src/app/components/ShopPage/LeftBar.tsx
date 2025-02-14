@@ -3,7 +3,7 @@ import { Suspense, useCallback } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import DualRangeSlider from "./DualRangeSlider";
 
-const LeftBar = () => {
+const LeftBarComp = () => {
   const router = useRouter();
   const searchParams = useSearchParams();
   const category = ["Sharee", "Panjabi", "Threepcs"];
@@ -65,9 +65,8 @@ const LeftBar = () => {
       </div>
 
       <div className="collapse border-gray-300 bg-base-100 border-2 m-4">
-        <Suspense fallback={<div>Loading price filter...</div>}>
+        {/* <Suspense fallback={<div>Loading price filter...</div>}> */}
           <DualRangeSlider />
-        </Suspense>
       </div>
 
       <div className="collapse collapse-arrow border-gray-300 bg-base-100 border-2 m-4">
@@ -112,6 +111,14 @@ const LeftBar = () => {
         </div>
       </div>
     </div>
+  );
+};
+
+const LeftBar = () => {
+  return (
+    <Suspense fallback={<div>Loading...</div>}>
+      <LeftBarComp />
+    </Suspense>
   );
 };
 
