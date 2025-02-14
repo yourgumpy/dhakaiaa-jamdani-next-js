@@ -25,7 +25,7 @@ const FacebookPageEmbed = ({ pageUrl, tabName = 'timeline' }: FacebookPageEmbedP
   }, []);
 
   return (
-    <div className="w-full overflow-hidden bg-base-100 rounded-lg shadow-lg">
+    <div className="w-full overflow-hidden">
       <div 
         className="fb-page" 
         data-href={pageUrl}

@@ -11,8 +11,7 @@ const Hero = () => {
         className="opacity-50 filter blur-sm"
         style={{ objectFit: 'cover' }}
         quality={100}
-        height={600}
-        width={1920}
+        fill={true}
       />
 
       <div className="absolute inset-0 flex items-center justify-between container mx-auto px-8">
