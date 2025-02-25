@@ -69,7 +69,7 @@ const Hero = () => {
                 transition={{ duration: 0.5, delay: 1.2 }}
                 className="absolute top-10 right-1/4 transform -translate-x-1/2 bg-[#203147] text-white px-4 py-2 rounded-lg font-semibold shadow-lg hover:bg-yellow-200 transition-all duration-300"
               >
-                <Link href="http://localhost:3000/Shop?category=Sharee">Sharee</Link>
+                <Link href="/Shop?category=Sharee">Sharee</Link>
               </motion.button>
             </div>
           </motion.div>
@@ -93,7 +93,7 @@ const Hero = () => {
                 transition={{ duration: 0.5, delay: 1.4 }}
                 className="absolute bottom-4 -right-10 transform -translate-x-1/2 bg-[#6d3737] text-white px-4 py-2 rounded-lg font-semibold shadow-lg hover:bg-yellow-200 transition-all duration-300"
               >
-                <Link href="http://localhost:3000/Shop?category=Panjabi">Panjabi</Link>
+                <Link href="/Shop?category=Panjabi">Panjabi</Link>
               </motion.button>
             </div>
           </motion.div>
@@ -117,7 +117,7 @@ const Hero = () => {
                 transition={{ duration: 0.5, delay: 1.6 }}
                 className="absolute bottom-4 -left-10 transform -translate-x-1/2 bg-yellow-300 text-red-600 px-4 py-2 rounded-lg font-semibold shadow-lg hover:bg-yellow-200 transition-all duration-300"
               >
-                <Link href="http://localhost:3000/Shop?category=Threepcs">Three Piece</Link>
+                <Link href="/Shop?category=Threepcs">Three Piece</Link>
               </motion.button>
             </div>
           </motion.div>

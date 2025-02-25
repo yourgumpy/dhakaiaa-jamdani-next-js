@@ -1,9 +1,9 @@
 import React, { useState } from 'react';
 import Image from 'next/image';
 import { Order } from '../actions';
-import {OrderDetailsModal} from './OrderDetailsModal';
-import {StatusBadge} from './StatusBadge';
-import {StatusDropdown} from './StatusDropdown';
+import { OrderDetailsModal } from './OrderDetailsModal';
+import { StatusBadge } from './StatusBadge';
+import { StatusDropdown } from './StatusDropdown';
 
 interface OrdersListProps {
   orders: Order[];
@@ -35,37 +35,63 @@ export const OrdersList: React.FC<OrdersListProps> = ({ orders, onStatusChange }
   };
 
   return (
-    <div className="overflow-x-auto">
-      <table className="table table-zebra w-full">
-        <thead>
+    <div className="w-full overflow-x-auto">
+      <table className="min-w-full divide-y divide-gray-200">
+        <thead className="bg-gray-50">
           <tr>
-            <th>Order ID</th>
-            <th>Date</th>
-            <th>Customer</th>
-            <th>Items</th>
-            <th>Total</th>
-            <th>Status</th>
-            <th>Actions</th>
+            <th scope="col" className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+              Order ID
+            </th>
+            <th scope="col" className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider hidden md:table-cell">
+              Date
+            </th>
+            <th scope="col" className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider hidden lg:table-cell">
+              Customer
+            </th>
+            <th scope="col" className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider hidden lg:table-cell">
+              Items
+            </th>
+            <th scope="col" className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider hidden lg:table-cell">
+              Total
+            </th>
+            <th scope="col" className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+              Status
+            </th>
+            <th scope="col" className="px-4 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
+              Actions
+            </th>
           </tr>
         </thead>
-        <tbody>
+        <tbody className="bg-white divide-y divide-gray-200">
           {orders.map((order) => (
-            <tr key={order.id} className="hover">
-              <td>#{order.id}</td>
-              <td>{formatDate(order.created_at)}</td>
-              <td>{order.user_details?.name || 'Unknown'}</td>
-              <td>{order.products.length} items</td>
-              <td>${order.total.toFixed(2)}</td>
-              <td>
-                <StatusDropdown 
-                  currentStatus={order.status} 
-                  onStatusChange={(newStatus) => onStatusChange(order.id, newStatus)} 
-                />
+            <tr key={order.id} className="hover:bg-gray-50">
+              <td className="px-4 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
+                #{order.id}
               </td>
-              <td>
-                <button 
-                  className="btn btn-sm btn-primary" 
+              <td className="px-4 py-4 whitespace-nowrap text-sm text-gray-500 hidden md:table-cell">
+                {formatDate(order.created_at)}
+              </td>
+              <td className="px-4 py-4 whitespace-nowrap text-sm text-gray-500 hidden lg:table-cell">
+                {(order.Order_info as any).firstName || 'Unknown'}
+              </td>
+              <td className="px-4 py-4 whitespace-nowrap text-sm text-gray-500 hidden lg:table-cell">
+                {order.products.length} items
+              </td>
+              <td className="px-4 py-4 whitespace-nowrap text-sm text-gray-500 hidden lg:table-cell">
+                ${order.total.toFixed(2)}
+              </td>
+              <td className="px-4 py-4 whitespace-nowrap text-sm">
+                {/* <div className="inline-block md:hidden"> */}
+                  <StatusDropdown 
+                    currentStatus={order.status} 
+                    onStatusChange={(newStatus) => onStatusChange(order.id, newStatus)} 
+                  />
+                {/* </div> */}
+              </td>
+              <td className="px-4 py-4 whitespace-nowrap text-right text-sm font-medium">
+                <button
                   onClick={() => handleViewDetails(order)}
+                  className="text-indigo-600 hover:text-indigo-900 bg-transparent hover:bg-indigo-50 px-2 py-1 rounded"
                 >
                   View Details
                 </button>
@@ -76,7 +102,7 @@ export const OrdersList: React.FC<OrdersListProps> = ({ orders, onStatusChange }
       </table>
 
       {selectedOrder && (
-        <OrderDetailsModal 
+        <OrderDetailsModal
           order={selectedOrder}
           isOpen={isModalOpen}
           onClose={closeModal}

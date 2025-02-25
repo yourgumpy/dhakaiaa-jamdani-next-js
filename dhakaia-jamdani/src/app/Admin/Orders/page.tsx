@@ -19,6 +19,7 @@ export default function Page() {
         setLoading(true);
         const data = await fetchOrders();
         setOrders(data);
+        // console.log(data);
         setFilteredOrders(data);
       } catch (err) {
         setError(err instanceof Error ? err.message : 'An error occurred');
@@ -107,7 +108,7 @@ export default function Page() {
   }
 
   return (
-    <div className="p-4">
+    <div className="p-4 pt-24">
       <div className="mb-6">
         <h1 className="text-2xl font-bold">Orders Management</h1>
         <p className="text-sm opacity-70">Manage customer orders and update their status</p>

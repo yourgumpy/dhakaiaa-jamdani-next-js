@@ -1,7 +1,10 @@
-import React from 'react';
+"use client";
+import React, { useEffect } from 'react';
 import Image from 'next/image';
 import { Order } from '../actions';
 import {StatusBadge} from './StatusBadge';
+import { useDispatch, useSelector } from 'react-redux';
+import { fetchProducts } from '@/app/slices/productSlices';
 
 interface OrderDetailsModalProps {
   order: Order;
@@ -25,6 +28,13 @@ export const OrderDetailsModal: React.FC<OrderDetailsModalProps> = ({
       minute: '2-digit'
     });
   };
+  const dispatch = useDispatch();
+  const { products, status, filters } = useSelector((state: any) => state.products);
+
+  useEffect(() => {
+    dispatch(fetchProducts() as any);
+
+  }, [dispatch]);
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">
@@ -49,10 +59,10 @@ export const OrderDetailsModal: React.FC<OrderDetailsModalProps> = ({
           <div>
             <h3 className="text-lg font-semibold mb-2">Customer Details</h3>
             <div className="bg-base-200 p-4 rounded-box">
-              <p><span className="font-medium">Name:</span> {order.user_details?.name || 'N/A'}</p>
-              <p><span className="font-medium">Email:</span> {order.user_details?.email || 'N/A'}</p>
-              <p><span className="font-medium">Phone:</span> {order.user_details?.phone || 'N/A'}</p>
-              <p><span className="font-medium">Address:</span> {order.user_details?.address || 'N/A'}</p>
+              <p><span className="font-medium">Name:</span> {(order.Order_info as any)?.firstName || 'N/A'}</p>
+              <p><span className="font-medium">Email:</span> {(order.Order_info as any)?.email || 'N/A'}</p>
+              <p><span className="font-medium">Phone:</span> {(order.Order_info as any)?.phone || 'N/A'}</p>
+              <p><span className="font-medium">Address:</span> {(order.Order_info as any)?.address || 'N/A'}</p>
             </div>
           </div>
         </div>
@@ -60,8 +70,13 @@ export const OrderDetailsModal: React.FC<OrderDetailsModalProps> = ({
         <div className="mt-6">
           <h3 className="text-lg font-semibold mb-2">Products</h3>
           <div className="bg-base-200 rounded-box p-4">
-            {order.products.map((product, index) => (
-              <div key={index} className="flex items-center gap-4 py-2 border-b border-base-300 last:border-0">
+            {order.products.map((p:any, index) => {
+
+              const product = products.find(
+                (_product:any) => _product.id === p.id
+              );
+
+              return <div key={index} className="flex items-center gap-4 py-2 border-b border-base-300 last:border-0">
                 {product.image_urls && product.image_urls[0] && (
                   <div className="flex-shrink-0">
                     <Image
@@ -78,7 +93,7 @@ export const OrderDetailsModal: React.FC<OrderDetailsModalProps> = ({
                   <p className="text-sm opacity-70">${product.price.toFixed(2)}</p>
                 </div>
               </div>
-            ))}
+})}
           </div>
         </div>
 

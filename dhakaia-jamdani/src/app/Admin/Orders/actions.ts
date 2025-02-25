@@ -14,12 +14,7 @@ export interface Order {
   status: string;
   total: number;
   products: Product[];
-  user_details?: {
-    name: string;
-    email: string;
-    phone: string;
-    address: string;
-  };
+  Order_info: JSON
 }
 
 // Fetch all orders
@@ -33,19 +28,8 @@ export const fetchOrders = async () => {
     if (error) throw error;
 
     // Transform the data to include user details
-    const ordersWithUserDetails = data.map(order => ({
-      ...order,
-      user_details: order.profiles ? {
-        name: order.profiles.name,
-        email: order.profiles.email,
-        phone: order.profiles.phone,
-        address: order.profiles.address
-      } : undefined,
-      // Remove the profiles object to keep the structure clean
-      profiles: undefined
-    }));
 
-    return ordersWithUserDetails;
+    return data;
   } catch (error) {
     console.error("Error fetching orders:", error);
     throw error;
