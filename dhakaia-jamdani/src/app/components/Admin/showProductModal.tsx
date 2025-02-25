@@ -252,6 +252,8 @@ const ProductModal: React.FC<ProductModalProps> = ({
                   <Image
                     src={url}
                     alt={`Product ${index + 1}`}
+                    width={80}
+                    height={80}
                     className="w-full h-32 object-cover rounded-lg"
                   />
                   {isEditing && (
@@ -274,6 +276,8 @@ const ProductModal: React.FC<ProductModalProps> = ({
                   <div key={index} className="relative group">
                     <Image
                       src={url}
+                      width={80}
+                    height={80}
                       alt={`New Image ${index + 1}`}
                       className="w-full h-32 object-cover rounded-lg"
                     />

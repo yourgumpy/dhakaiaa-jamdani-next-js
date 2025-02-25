@@ -5,7 +5,7 @@ import { getUserData, userProfile } from "../auth/getUser";
 import { User } from "@supabase/supabase-js";
 import { UserProfile } from "../auth/getUser";
 import { redirect } from "next/navigation";
-import { Package, Heart, User2, Settings, ShoppingBag } from "lucide-react";
+import { Package, Heart, User2, Settings } from "lucide-react";
 import Orders from "./orders";
 import Favorites from "./favorites";
 

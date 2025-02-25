@@ -164,7 +164,7 @@ const Navbar = ({
           <button
             className="btn btn-ghost btn-circle"
             onClick={handleSearchToggle}
-            area-label="search"
+            area-label="Search"
           >
             <svg
               xmlns="http://www.w3.org/2000/svg"

@@ -1,6 +1,5 @@
 "use client";
 import { useState, useEffect } from "react";
-import ReactDOMServer from "react-dom/server";
 import { useSelector, useDispatch } from "react-redux";
 import {
   initializeFromStorage,
@@ -14,7 +13,7 @@ import { fetchProducts } from "../slices/productSlices";
 import { getUserData, userProfile, UserProfile } from "../auth/getUser";
 import { User } from "@supabase/supabase-js";
 import { saveOrder } from "../api/orders";
-import { sendMail } from "../api/resend";
+import { sendMail } from "../api/send-order-email";
 
 interface CheckoutStep {
   title: string;
@@ -107,16 +106,23 @@ const Page = () => {
             id: p.id,
             quantity: p.quantity,
           })) as unknown as JSON[],
+          Order_info: formData as unknown as JSON
         };
 
         // Save order to database
         const order = await saveOrder(orderData);
         console.log("Order saved:", order);
 
+        const ordered_products_id = cartProducts.map((p: { id: number }) => p.id);
+        const ordered_products = products?.filter((p: any) =>
+          ordered_products_id.includes(p.id)
+        );
+
         const emailResponse = await sendMail(
           "Order Confirmation",
           order,
-          formData
+          formData,
+          ordered_products
         );
         console.log("Email response:", emailResponse);
 

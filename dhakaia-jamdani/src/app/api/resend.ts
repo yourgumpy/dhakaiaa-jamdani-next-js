@@ -4,7 +4,7 @@ import { OrderConfirm } from "@/app/components/email_templates/order-comfirmatio
 
 const resend = new Resend(process.env.RESEND_API_KEY);
 
-export const sendMail = async (subject: string, order: any, formdata: any) => {
+export const sendMail = async (subject: string, order: any, formdata: any, products: any) => {
   try {
     const { data, error } = await resend.emails.send({
       from: "onboarding@resend.dev",
@@ -20,7 +20,7 @@ export const sendMail = async (subject: string, order: any, formdata: any) => {
         postalCode: formdata.postalCode,
         phone: formdata.phone,
         total: order.total,
-        products: order.products,
+        products: products,
       }),
     });
 

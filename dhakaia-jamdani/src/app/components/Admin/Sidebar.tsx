@@ -27,7 +27,7 @@ const Sidebar = () => {
               </Link>
             </li>
             <li className="p-4 border-gray-600">
-              <Link href="#" className=" text-lg font-semibold">
+              <Link href="/Admin/Orders" className=" text-lg font-semibold">
                 Orders
               </Link>
             </li>

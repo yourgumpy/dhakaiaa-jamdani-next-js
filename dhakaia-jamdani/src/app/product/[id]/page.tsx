@@ -130,7 +130,7 @@ const Page = () => {
             </h1>
 
             <Link
-              href={product.category}
+              href={`/Shop?category=${product.category}`}
               className="inline-block px-4 py-2 bg-blue-100 text-blue-800 rounded-full text-sm font-medium hover:bg-blue-200 transition-colors"
             >
               {product.category}

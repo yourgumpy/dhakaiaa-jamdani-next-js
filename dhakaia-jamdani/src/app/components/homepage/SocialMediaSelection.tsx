@@ -49,7 +49,7 @@ const SocialMediaSection = () => {
           <polygon points="9.75 15.02 15.5 11.75 9.75 8.48 9.75 15.02"></polygon>
         </svg>
       ),
-      url: "https://youtube.com/@dhakaiaajamdani",
+      url: "https://youtube.com/@DhakaiaaJamdani",
     },
     {
       name: "TikTok",
@@ -64,7 +64,7 @@ const SocialMediaSection = () => {
           <path d="M9 12a4 4 0 1 0 4 4V4a5 5 0 0 1 5 5"></path>
         </svg>
       ),
-      url: "https://tiktok.com/@dhakaiaajamdani",
+      url: "https://tiktok.com/@dhakaiaa.jamdani",
     },
   ];
 

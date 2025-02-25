@@ -12,17 +12,17 @@ const LeftBarComp = () => {
     (name: string, value: string) => {
       const params = new URLSearchParams(searchParams.toString());
 
-      if (name === "category") {
-        const categories = params.getAll("category");
-        if (categories.includes(value)) {
-          // Remove category if already selected
-          params.delete("category");
-          categories
-            .filter((cat) => cat !== value)
-            .forEach((cat) => params.append("category", cat));
+      if (name === "category" || name === "availability") {
+        const values = params.getAll(name);
+        if (values.includes(value)) {
+          // Remove value if already selected
+          params.delete(name);
+          values
+            .filter((val) => val !== value)
+            .forEach((val) => params.append(name, val));
         } else {
-          // Add new category
-          params.append("category", value);
+          // Add new value
+          params.append(name, value);
         }
       } else {
         params.set(name, value);
@@ -65,23 +65,21 @@ const LeftBarComp = () => {
       </div>
 
       <div className="collapse border-gray-300 bg-base-100 border-2 m-4">
-        {/* <Suspense fallback={<div>Loading price filter...</div>}> */}
-          <DualRangeSlider />
+        <DualRangeSlider />
       </div>
 
       <div className="collapse collapse-arrow border-gray-300 bg-base-100 border-2 m-4">
         <input type="checkbox" />
         <div className="collapse-title lg:text-xl text-lg font-medium">
-          Availbility
+          Availability
         </div>
         <div className="collapse-content">
           <div className="flex justify-start items-center cursor-pointer">
             <label className="lg:text-lg text-md pl-2 border-2 border-gray-300 rounded-full p-2 mb-2 pr-7">
               <input
-                type="radio"
-                name="stock"
-                className="radio radio-xs"
-                checked={searchParams.get("availability") === "in-stock"}
+                type="checkbox"
+                className="checkbox checkbox-xs"
+                checked={searchParams.getAll("availability").includes("in-stock")}
                 onChange={() => {
                   router.push(
                     "?" + createQueryString("availability", "in-stock")
@@ -95,10 +93,9 @@ const LeftBarComp = () => {
           <div className="flex justify-start items-center cursor-pointer">
             <label className="lg:text-lg text-md pl-2 border-2 border-gray-300 rounded-full p-2 mb-2 pr-7">
               <input
-                type="radio"
-                name="stock"
-                className="radio radio-xs"
-                checked={searchParams.get("availability") === "out-of-stock"}
+                type="checkbox"
+                className="checkbox checkbox-xs"
+                checked={searchParams.getAll("availability").includes("out-of-stock")}
                 onChange={() => {
                   router.push(
                     "?" + createQueryString("availability", "out-of-stock")

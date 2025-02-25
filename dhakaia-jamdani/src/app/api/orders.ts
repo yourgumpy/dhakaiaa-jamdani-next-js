@@ -6,7 +6,8 @@ interface Order {
   status: "confirmed" | "processing" | "shipped" | "cancelled" | "delivered" | "returned" | "refunded";
   total: number;
   products: JSON[];
-  created_at?: string; 
+  created_at?: string;
+  Order_info: JSON;
 }
 
 export const saveOrder = async (order: Omit<Order, 'id' | 'created_at'>) => {
