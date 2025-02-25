@@ -36,8 +36,8 @@ export const OrdersList: React.FC<OrdersListProps> = ({ orders, onStatusChange }
 
   return (
     <div className="w-full overflow-x-auto">
-      <table className="min-w-full divide-y divide-gray-200">
-        <thead className="bg-gray-50">
+      <table className="min-w-full divide-y">
+        <thead className="">
           <tr>
             <th scope="col" className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
               Order ID
@@ -62,10 +62,10 @@ export const OrdersList: React.FC<OrdersListProps> = ({ orders, onStatusChange }
             </th>
           </tr>
         </thead>
-        <tbody className="bg-white divide-y divide-gray-200">
+        <tbody className="divide-y">
           {orders.map((order) => (
             <tr key={order.id} className="hover:bg-gray-50">
-              <td className="px-4 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
+              <td className="px-4 py-4 whitespace-nowrap text-sm font-medium text-gray-600">
                 #{order.id}
               </td>
               <td className="px-4 py-4 whitespace-nowrap text-sm text-gray-500 hidden md:table-cell">
