@@ -11,7 +11,7 @@ export const StatusDropdown: React.FC<StatusDropdownProps> = ({
   onStatusChange 
 }) => {
   const [isUpdating, setIsUpdating] = useState(false);
-  const statusOptions = ['Pending', 'Processing', 'Shipped', 'Delivered', 'Completed', 'Cancelled'];
+  const statusOptions = ['Pending', 'Processing', 'Shipped', 'Delivered', 'Cancelled'];
 
   const handleStatusChange = async (newStatus: string) => {
     if (newStatus === currentStatus) return;
@@ -53,14 +53,14 @@ export const StatusDropdown: React.FC<StatusDropdownProps> = ({
         </span>
         {isUpdating ? 'Updating...' : 'Change'}
       </div>
-      <ul tabIndex={0} className="dropdown-content z-[1] menu p-2 shadow bg-base-100 rounded-box w-52">
+      <ul tabIndex={0} className="dropdown-content z-[1] menu p-2 shadow bg-base-100 rounded-box w-42">
         {statusOptions.map((status) => (
           <li key={status}>
             <a onClick={() => handleStatusChange(status)}>
               <span className={`badge ${getStatusClass(status)} mr-2`}>
                 {status}
               </span>
-              {status}
+              {/* {status} */}
             </a>
           </li>
         ))}
