@@ -7,22 +7,16 @@ import { motion, AnimatePresence } from "framer-motion";
 import { UserProfile, userProfile } from "@/app/auth/getUser";
 import { supabase } from "../utils/supabase/supabaseClient";
 import ThemeToggle from "./ui/ThemeToggle";
+import SearchWithAutocomplete from "./search/SearchWithAutocomplete";
 import { useSelector } from "react-redux";
 
 const Navbar = () => {
   const [user, setUser] = useState<UserProfile | null>(null);
   const [searchOpen, setSearchOpen] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
-  const [searchQuery, setSearchQuery] = useState("");
-  const searchInputRef = useRef<HTMLInputElement>(null);
   const { cart } = useSelector((state: any) => state.cart);
 
-  const handleSearchToggle = () => {
-    setSearchOpen(!searchOpen);
-    if (!searchOpen) {
-      setTimeout(() => searchInputRef.current?.focus(), 100);
-    }
-  };
+  const totalItems = cart.reduce((total: number, item: any) => total + item.quantity, 0);
 
   useEffect(() => {
     const fetchUser = async () => {
@@ -39,22 +33,6 @@ const Navbar = () => {
     });
   }, []);
 
-  useEffect(() => {
-    const handleClickOutside = (event: MouseEvent) => {
-      if (
-        searchInputRef.current &&
-        !searchInputRef.current.contains(event.target as Node)
-      ) {
-        setSearchOpen(false);
-      }
-    };
-
-    document.addEventListener("mousedown", handleClickOutside);
-    return () => {
-      document.removeEventListener("mousedown", handleClickOutside);
-    };
-  }, []);
-
   const navItems = [
     { href: "/", label: "Home" },
     { href: "/Shop", label: "Shop" },
@@ -69,7 +47,7 @@ const Navbar = () => {
         animate={{ y: 0 }}
         className="fixed top-4 left-1/2 transform -translate-x-1/2 w-11/12 max-w-7xl z-50"
       >
-        <div className="bg-white/80 dark:bg-gray-900/80 backdrop-blur-md rounded-2xl shadow-lg border border-gray-200/20 dark:border-gray-700/20">
+        <div className="bg-white/90 dark:bg-gray-900/90 backdrop-blur-xl rounded-2xl shadow-xl border border-gray-200/20 dark:border-gray-700/20">
           <div className="px-4 sm:px-6 lg:px-8">
             <div className="flex items-center justify-between h-16">
               {/* Logo */}
@@ -109,7 +87,7 @@ const Navbar = () => {
                 <motion.button
                   whileHover={{ scale: 1.1 }}
                   whileTap={{ scale: 0.95 }}
-                  onClick={handleSearchToggle}
+                  onClick={() => setSearchOpen(true)}
                   className="p-2 text-gray-700 dark:text-gray-300 hover:text-red-500 dark:hover:text-red-400 transition-colors duration-200"
                   aria-label="Search"
                 >
@@ -124,21 +102,21 @@ const Navbar = () => {
                   whileHover={{ scale: 1.1 }}
                   className="relative"
                 >
-                  <Link
-                    href="/cart"
-                    className="p-2 text-gray-700 dark:text-gray-300 hover:text-red-500 dark:hover:text-red-400 transition-colors duration-200"
-                  >
+                  <div className="p-2 text-gray-700 dark:text-gray-300 hover:text-red-500 dark:hover:text-red-400 transition-colors duration-200 cursor-pointer">
                     <ShoppingBag className="w-5 h-5" />
-                    {cart.length > 0 && (
-                      <motion.span
-                        initial={{ scale: 0 }}
-                        animate={{ scale: 1 }}
-                        className="absolute -top-1 -right-1 bg-red-500 text-white text-xs rounded-full w-5 h-5 flex items-center justify-center"
-                      >
-                        {cart.length}
-                      </motion.span>
-                    )}
-                  </Link>
+                    <AnimatePresence>
+                      {totalItems > 0 && (
+                        <motion.span
+                          initial={{ scale: 0 }}
+                          animate={{ scale: 1 }}
+                          exit={{ scale: 0 }}
+                          className="absolute -top-1 -right-1 bg-red-500 text-white text-xs rounded-full w-5 h-5 flex items-center justify-center font-bold"
+                        >
+                          {totalItems}
+                        </motion.span>
+                      )}
+                    </AnimatePresence>
+                  </div>
                 </motion.div>
 
                 {/* User */}
@@ -183,32 +161,6 @@ const Navbar = () => {
               </div>
             </div>
           </div>
-
-          {/* Search Bar */}
-          <AnimatePresence>
-            {searchOpen && (
-              <motion.div
-                initial={{ opacity: 0, height: 0 }}
-                animate={{ opacity: 1, height: "auto" }}
-                exit={{ opacity: 0, height: 0 }}
-                className="border-t border-gray-200/20 dark:border-gray-700/20"
-              >
-                <div className="px-4 py-4">
-                  <div className="relative">
-                    <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-4 h-4" />
-                    <input
-                      ref={searchInputRef}
-                      type="text"
-                      value={searchQuery}
-                      onChange={(e) => setSearchQuery(e.target.value)}
-                      placeholder="Search for products..."
-                      className="w-full pl-10 pr-4 py-2 bg-gray-50 dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg focus:outline-none focus:ring-2 focus:ring-red-500 focus:border-transparent transition-all duration-200"
-                    />
-                  </div>
-                </div>
-              </motion.div>
-            )}
-          </AnimatePresence>
 
           {/* Mobile Menu */}
           <AnimatePresence>
@@ -262,6 +214,12 @@ const Navbar = () => {
           </AnimatePresence>
         </div>
       </motion.nav>
+
+      {/* Search Modal */}
+      <SearchWithAutocomplete 
+        isOpen={searchOpen} 
+        onClose={() => setSearchOpen(false)} 
+      />
 
       {/* Spacer to prevent content from hiding behind fixed navbar */}
       <div className="h-24"></div>
