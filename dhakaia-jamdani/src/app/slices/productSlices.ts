@@ -1,24 +1,27 @@
 import { createSlice, createAsyncThunk, PayloadAction } from '@reduxjs/toolkit';
 import { supabase } from '../utils/supabase/supabaseClient';
 
-// Define types for our filters
 export interface FilterParams {
   category?: string[];
   minPrice?: number;
   maxPrice?: number;
-  availability?: 'in-stock' | 'out-of-stock';
+  availability?: string[];
+  rating?: number[];
+  search?: string;
 }
 
 export interface Product {
   id: number;
-  name: string;
+  title: string;
   price: number;
   discount: number;
   discounted_price: number;
   category: string;
   availability: string;
-  image_url?: string;
+  image_urls?: string[];
   description?: string;
+  rating?: number;
+  created_at?: string;
 }
 
 interface ProductsState {
@@ -44,6 +47,16 @@ export const fetchProducts = createAsyncThunk(
         query = query.in('category', filters.category);
       }
       
+      // Search filter
+      if (filters.search) {
+        query = query.or(`title.ilike.%${filters.search}%,description.ilike.%${filters.search}%,category.ilike.%${filters.search}%`);
+      }
+      
+      // Availability filter
+      if (filters.availability && filters.availability.length > 0) {
+        query = query.in('availability', filters.availability);
+      }
+
       // Price filter using raw price (we'll filter discounted prices in JS)
       if (filters.minPrice !== undefined) {
         query = query.gte('price', filters.minPrice);
@@ -51,14 +64,9 @@ export const fetchProducts = createAsyncThunk(
       if (filters.maxPrice !== undefined) {
         query = query.lte('price', filters.maxPrice);
       }
-
-      if (filters.availability) {
-        query = query.eq('availability', filters.availability);
-      }
     }
 
-    // Basic ordering by price (we'll sort by discounted price after fetching)
-    query = query.order('price', { ascending: true });
+    query = query.order('created_at', { ascending: false });
 
     const { data: products, error } = await query;
     
@@ -66,21 +74,29 @@ export const fetchProducts = createAsyncThunk(
       throw new Error(error.message);
     }
     
-    // Calculate discounted prices and filter/sort in JavaScript
+    // Calculate discounted prices and apply additional filters
     const processedProducts = products
       .map(product => ({
         ...product,
-        discounted_price: product.price - ((product.price * product.discount) / 100)
+        discounted_price: product.price - ((product.price * product.discount) / 100),
+        rating: product.rating || Math.floor(Math.random() * 2) + 4 // Mock rating for demo
       }))
       // Re-filter based on discounted price if price filters are set
       .filter(product => {
         if (!filters) return true;
+        
         const price = product.discounted_price;
         if (filters.minPrice !== undefined && price < filters.minPrice) return false;
         if (filters.maxPrice !== undefined && price > filters.maxPrice) return false;
+        
+        // Rating filter
+        if (filters.rating && filters.rating.length > 0) {
+          const hasMatchingRating = filters.rating.some(rating => product.rating >= rating);
+          if (!hasMatchingRating) return false;
+        }
+        
         return true;
       })
-      // Sort by discounted price
       .sort((a, b) => a.discounted_price - b.discounted_price);
 
     return processedProducts;
@@ -95,7 +111,9 @@ const initialState: ProductsState = {
     category: [],
     minPrice: 0,
     maxPrice: 10000,
-    availability: undefined,
+    availability: [],
+    rating: [],
+    search: "",
   },
 };
 

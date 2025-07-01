@@ -1,97 +1,108 @@
 "use client";
 import { useState, useEffect, Suspense } from "react";
 import Image from "next/image";
-import LeftBar from "../components/ShopPage/LeftBar";
+import AdvancedFilters from "../components/ShopPage/AdvancedFilters";
 import TopBar from "../components/ShopPage/TopBar";
 import { useDispatch } from "react-redux";
 import { fetchProducts, setFilters } from "@/app/slices/productSlices";
 import { useSearchParams, useRouter } from "next/navigation";
+import { motion } from "framer-motion";
 
 const ShopLayout = ({ children }: { children: React.ReactNode }) => {
   const dispatch = useDispatch();
   const searchParams = useSearchParams();
   const router = useRouter();
   
-  // Set up sort state
   const [currentSort, setCurrentSort] = useState("default");
 
   useEffect(() => {
-    // Initial fetch of products
     dispatch(fetchProducts() as any);
     
-    // Get any existing filters from URL
     const category = searchParams.getAll('category');
     const minPrice = searchParams.get('minPrice');
     const maxPrice = searchParams.get('maxPrice');
     const availability = searchParams.getAll('availability');
+    const rating = searchParams.getAll('rating');
+    const search = searchParams.get('search');
     
-    // Update Redux filters
     const filters = {
       category: category.length > 0 ? category : [],
       minPrice: minPrice ? parseInt(minPrice) : 0,
       maxPrice: maxPrice ? parseInt(maxPrice) : 10000,
       availability: availability.length > 0 ? availability : [],
+      rating: rating.map(r => parseInt(r)),
+      search: search || "",
     };
     
     dispatch(setFilters(filters));
   }, [dispatch, searchParams]);
 
-  // Handle sort option change
   const handleSortChange = (sortOption: string) => {
     setCurrentSort(sortOption);
     
-    // Update URL with sort parameter
     const params = new URLSearchParams(searchParams.toString());
     params.set('sort', sortOption);
     router.push(`?${params.toString()}`);
   };
 
   return (
-    <div>
+    <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
       {/* Hero Banner */}
-      <div className="relative w-full h-64">
+      <div className="relative h-64 overflow-hidden">
         <Image
           src="/images/Do-Shopping.png"
-          alt="Do Shopping"
-          width={1920}
-          height={1080}
-          className="w-full h-full object-cover brightness-75"
+          alt="Shop Banner"
+          fill
+          className="object-cover"
+          priority
         />
-        <div className="absolute inset-0 bg-black opacity-50"></div>
-        <div className="absolute inset-0 flex flex-col items-center justify-center text-white">
-          <h1 className="text-4xl font-sans font-bold">Do Your Shopping</h1>
-          <p className="text-base md:text-lg mt-2 max-w-md text-center px-4">
-            Explore our collection and find something special
+        <div className="absolute inset-0 bg-gradient-to-r from-black/60 to-black/30" />
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.8 }}
+          className="absolute inset-0 flex flex-col items-center justify-center text-white text-center"
+        >
+          <h1 className="text-4xl md:text-6xl font-bold mb-4">
+            Discover <span className="text-red-400">Authentic</span> Heritage
+          </h1>
+          <p className="text-lg md:text-xl max-w-2xl px-4">
+            Explore our curated collection of traditional Bangladeshi craftsmanship
           </p>
-        </div>
+        </motion.div>
       </div>
 
-      {/* Main Content Area */}
-      <div className="min-h-[300px] flex justify-center p-5 pt-10">
-        {/* Left Sidebar - Desktop */}
-        <div className="lg:block hidden">
-          <LeftBar />
-        </div>
-        
-        {/* Main Content with TopBar */}
-        <div className="grid lg:pl-10 w-full max-w-6xl">
-          <Suspense fallback={<div>Loading product filters...</div>}>
-            <TopBarWrapper onSortChange={handleSortChange} />
-          </Suspense>
+      {/* Main Content */}
+      <div className="container mx-auto px-4 py-8">
+        <div className="flex gap-8">
+          {/* Sidebar Filters - Desktop */}
+          <div className="hidden lg:block flex-shrink-0">
+            <div className="sticky top-24">
+              <AdvancedFilters />
+            </div>
+          </div>
           
-          {/* Children with sort props */}
-          <div className="mt-6">
-            {children}
+          {/* Main Content */}
+          <div className="flex-1 space-y-6">
+            {/* Mobile Filters */}
+            <div className="lg:hidden">
+              <AdvancedFilters />
+            </div>
+            
+            {/* Top Bar */}
+            <Suspense fallback={<div>Loading filters...</div>}>
+              <TopBar onSortChange={handleSortChange} />
+            </Suspense>
+            
+            {/* Products */}
+            <div>
+              {children}
+            </div>
           </div>
         </div>
       </div>
     </div>
   );
-};
-
-// Wrapper for TopBar to add the onSortChange prop
-const TopBarWrapper = ({ onSortChange }: { onSortChange: (sortOption: string) => void }) => {
-  return <TopBar onSortChange={onSortChange} />;
 };
 
 export default ShopLayout;
