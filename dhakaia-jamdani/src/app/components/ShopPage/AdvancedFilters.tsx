@@ -7,7 +7,7 @@ import DualRangeSlider from "./DualRangeSlider";
 
 const AdvancedFilters = () => {
   const router = useRouter();
-  const searchParams = useSearchParams();
+  const searchParams = useSearchParams(); // Get the current search params
   const [isOpen, setIsOpen] = useState(false);
   const [expandedSections, setExpandedSections] = useState({
     category: true,
@@ -19,27 +19,38 @@ const AdvancedFilters = () => {
   const categories = ["Sharee", "Panjabi", "Threepcs"];
   const ratings = [5, 4, 3, 2, 1];
 
+  // Modified createQueryString
   const createQueryString = useCallback(
     (name: string, value: string) => {
-      const params = new URLSearchParams(searchParams.toString());
+      const params = new URLSearchParams(searchParams.toString()); // Start with existing params
 
       if (name === "category" || name === "availability" || name === "rating") {
         const values = params.getAll(name);
         if (values.includes(value)) {
-          params.delete(name);
+          // If value exists, remove it
+          params.delete(name); // Delete all instances first
           values
             .filter((val) => val !== value)
-            .forEach((val) => params.append(name, val));
+            .forEach((val) => params.append(name, val)); // Then append back the ones that remain
         } else {
+          // If value doesn't exist, add it
           params.append(name, value);
         }
       } else {
-        params.set(name, value);
+        // For single-value parameters like minPrice, maxPrice, search
+        if (value) {
+          params.set(name, value);
+        } else {
+          params.delete(name); // Remove if value is empty
+        }
       }
+
+      // Reset page to 1 when a filter changes (optional but good UX)
+      params.set("page", "1"); 
 
       return params.toString();
     },
-    [searchParams]
+    [searchParams] // Dependency on searchParams to ensure it uses the latest URL state
   );
 
   const clearAllFilters = () => {
