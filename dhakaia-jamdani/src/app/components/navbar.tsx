@@ -1,27 +1,27 @@
 "use client";
 
 import Link from "next/link";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faSun, faMoon } from "@fortawesome/free-solid-svg-icons";
-import { useState } from "react";
-import { useRef } from "react";
-import { useEffect } from "react";
+import { useState, useRef, useEffect } from "react";
+import { Search, Menu, User, ShoppingBag, X } from "lucide-react";
+import { motion, AnimatePresence } from "framer-motion";
 import { UserProfile, userProfile } from "@/app/auth/getUser";
 import { supabase } from "../utils/supabase/supabaseClient";
+import ThemeToggle from "./ui/ThemeToggle";
+import { useSelector } from "react-redux";
 
-const Navbar = ({
-  isChecked,
-  onToggle,
-}: {
-  isChecked: boolean;
-  onToggle: () => void;
-}) => {
+const Navbar = () => {
   const [user, setUser] = useState<UserProfile | null>(null);
   const [searchOpen, setSearchOpen] = useState(false);
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [searchQuery, setSearchQuery] = useState("");
   const searchInputRef = useRef<HTMLInputElement>(null);
+  const { cart } = useSelector((state: any) => state.cart);
 
   const handleSearchToggle = () => {
     setSearchOpen(!searchOpen);
+    if (!searchOpen) {
+      setTimeout(() => searchInputRef.current?.focus(), 100);
+    }
   };
 
   useEffect(() => {
@@ -54,172 +54,218 @@ const Navbar = ({
       document.removeEventListener("mousedown", handleClickOutside);
     };
   }, []);
-  
+
+  const navItems = [
+    { href: "/", label: "Home" },
+    { href: "/Shop", label: "Shop" },
+    { href: "/about", label: "About" },
+    { href: "/contact", label: "Contact" },
+  ];
 
   return (
-    <div className="relative">
-      <div className="navbar transition-all duration-300 bg-base-300 rounded-md fixed top-4 left-1/2 transform -translate-x-1/2 shadow-lg w-11/12 z-50">
-        <div className="navbar-start">
-          <div className="dropdown">
-            <div
-              tabIndex={0}
-              role="button"
-              className="btn btn-ghost btn-circle"
-            >
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                className="h-5 w-5"
-                fill="none"
-                viewBox="0 0 24 24"
-                stroke="currentColor"
+    <>
+      <motion.nav
+        initial={{ y: -100 }}
+        animate={{ y: 0 }}
+        className="fixed top-4 left-1/2 transform -translate-x-1/2 w-11/12 max-w-7xl z-50"
+      >
+        <div className="bg-white/80 dark:bg-gray-900/80 backdrop-blur-md rounded-2xl shadow-lg border border-gray-200/20 dark:border-gray-700/20">
+          <div className="px-4 sm:px-6 lg:px-8">
+            <div className="flex items-center justify-between h-16">
+              {/* Logo */}
+              <motion.div
+                whileHover={{ scale: 1.05 }}
+                className="flex-shrink-0"
               >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth="2"
-                  d="M4 6h16M4 12h16M4 18h7"
-                />
-              </svg>
-            </div>
-            <ul
-              tabIndex={0}
-              className="menu menu-sm dropdown-content bg-base-100 rounded-box z-[1] mt-3 w-52 p-2 shadow"
-            >
-              <li>
-                <Link href="/">Homepage</Link>
-              </li>
-              <li>
-                <Link href="/Shop">Shop</Link>
-              </li>
-              <li>
-                <a>About</a>
-              </li>
-              {/* Toggle dark/light mode and login for mobile */}
-              <li className="block md:hidden">
-                <label
-                  htmlFor="custom-toggle"
-                  className="flex items-center space-x-2"
-                >
-                  <input
-                    type="checkbox"
-                    className="hidden"
-                    id="custom-toggle"
-                    checked={isChecked}
-                    onChange={onToggle}
-                  />
-                  <span className="relative inline-block w-12 h-6 cursor-pointer">
-                    <span className="absolute top-0 left-0 w-full h-full bg-gray-300 rounded-full transition duration-300"></span>
-                    <span
-                      className={`absolute top-0 w-6 h-6 bg-white rounded-full shadow transform transition duration-300 ${
-                        isChecked ? "translate-x-6" : ""
-                      }`}
-                    >
-                      <FontAwesomeIcon
-                        icon={isChecked ? faSun : faMoon}
-                        className="absolute inset-0 m-auto w-4 h-4"
-                      />
-                    </span>
+                <Link href="/" className="flex items-center space-x-2">
+                  <div className="w-8 h-8 bg-gradient-to-br from-red-500 to-orange-500 rounded-lg flex items-center justify-center">
+                    <span className="text-white font-bold text-sm">ঢ</span>
+                  </div>
+                  <span className="text-xl font-bold bg-gradient-to-r from-red-500 to-orange-500 bg-clip-text text-transparent">
+                    ঢাকাইয়া জামদানি
                   </span>
-                </label>
-              </li>
-              <li className="block md:hidden">
-                <button className="btn btn-ghost btn-circle">
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    x="0px"
-                    y="0px"
-                    className="h-7 w-7"
-                    viewBox="0 0 30 30"
-                  >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth="2"
-                      d="M 16 4 C 12.144531 4 9 7.144531 9 11 C 9 13.394531 10.21875 15.519531 12.0625 16.78125 C 8.484375 18.304688 6 21.859375 6 26 L 8 26 C 8 21.535156 11.535156 18 16 18 C 20.464844 18 24 21.535156 24 26 L 26 26 C 26 21.859375 23.515625 18.304688 19.9375 16.78125 C 21.78125 15.519531 23 13.394531 23 11 C 23 7.144531 19.855469 4 16 4 Z M 16 6 C 18.773438 6 21 8.226563 21 11 C 21 13.773438 18.773438 16 16 16 C 13.226563 16 11 13.773438 11 11 C 11 8.226563 13.226563 6 16 6 Z"
-                    ></path>
-                  </svg>
-                </button>
-              </li>
-            </ul>
-          </div>
-        </div>
-        <div className="navbar-center">
-          <a className="btn btn-ghost text-xl text-red-500">ঢাকাইয়া জামদানি</a>
-        </div>
-        <div className="navbar-end">
-          <div
-            className={`pl-2 transition-all duration-300 absolute top-full left-1/2 transform -translate-x-1/2 ${
-              searchOpen ? "opacity-100 scale-100" : "opacity-0 scale-95"
-            }`}
-          >
-            {searchOpen && (
-              <input
-                type="text"
-                ref={searchInputRef}
-                placeholder="Search here"
-                className="input input-bordered w-[300px] md:w-[800px]"
-              />
-            )}
-          </div>
-          <button
-            className="btn btn-ghost btn-circle"
-            onClick={handleSearchToggle}
-            area-label="Search"
-          >
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              className="h-5 w-5"
-              fill="none"
-              viewBox="0 0 24 24"
-              stroke="currentColor"
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth="2"
-                d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
-              />
-            </svg>
-          </button>
+                </Link>
+              </motion.div>
 
-          <div className="hidden md:flex items-center space-x-2 ">
-            {/* Toggle dark/light mode for desktop */}
-            <label
-              htmlFor="custom-toggle"
-              className="relative inline-block w-12 h-6 cursor-pointer"
-            >
-              <input
-                type="checkbox"
-                className="hidden"
-                id="custom-toggle"
-                checked={isChecked}
-                onChange={onToggle}
-              />
-              <span className="absolute top-0 left-0 w-full h-full bg-gray-300 rounded-full transition duration-300"></span>
-              <span
-                className={`absolute top-0 w-6 h-6 bg-white rounded-full shadow transform transition duration-300 ${
-                  isChecked ? "translate-x-6" : ""
-                }`}
-              >
-                <FontAwesomeIcon
-                  icon={isChecked ? faSun : faMoon}
-                  className="absolute inset-0 m-auto w-4 h-4"
-                />
-              </span>
-            </label>
-            {user ? (
-              <Link href="/dashboard" className="ml-5 mr-5 btn btn-ghost">
-                <p>{user.firstname}</p>
-              </Link>
-            ) : (
-              <Link href="/login" className="btn btn-ghost btn-circle">
-                <span className="material-icons">person</span>
-              </Link>
-            )}
+              {/* Desktop Navigation */}
+              <div className="hidden md:block">
+                <div className="ml-10 flex items-baseline space-x-8">
+                  {navItems.map((item) => (
+                    <Link
+                      key={item.href}
+                      href={item.href}
+                      className="text-gray-700 dark:text-gray-300 hover:text-red-500 dark:hover:text-red-400 px-3 py-2 rounded-md text-sm font-medium transition-colors duration-200 relative group"
+                    >
+                      {item.label}
+                      <span className="absolute inset-x-0 bottom-0 h-0.5 bg-red-500 transform scale-x-0 group-hover:scale-x-100 transition-transform duration-200"></span>
+                    </Link>
+                  ))}
+                </div>
+              </div>
+
+              {/* Right side actions */}
+              <div className="flex items-center space-x-4">
+                {/* Search */}
+                <motion.button
+                  whileHover={{ scale: 1.1 }}
+                  whileTap={{ scale: 0.95 }}
+                  onClick={handleSearchToggle}
+                  className="p-2 text-gray-700 dark:text-gray-300 hover:text-red-500 dark:hover:text-red-400 transition-colors duration-200"
+                  aria-label="Search"
+                >
+                  <Search className="w-5 h-5" />
+                </motion.button>
+
+                {/* Theme Toggle */}
+                <ThemeToggle size="sm" />
+
+                {/* Cart */}
+                <motion.div
+                  whileHover={{ scale: 1.1 }}
+                  className="relative"
+                >
+                  <Link
+                    href="/cart"
+                    className="p-2 text-gray-700 dark:text-gray-300 hover:text-red-500 dark:hover:text-red-400 transition-colors duration-200"
+                  >
+                    <ShoppingBag className="w-5 h-5" />
+                    {cart.length > 0 && (
+                      <motion.span
+                        initial={{ scale: 0 }}
+                        animate={{ scale: 1 }}
+                        className="absolute -top-1 -right-1 bg-red-500 text-white text-xs rounded-full w-5 h-5 flex items-center justify-center"
+                      >
+                        {cart.length}
+                      </motion.span>
+                    )}
+                  </Link>
+                </motion.div>
+
+                {/* User */}
+                <div className="hidden md:block">
+                  {user ? (
+                    <Link
+                      href="/dashboard"
+                      className="flex items-center space-x-2 text-gray-700 dark:text-gray-300 hover:text-red-500 dark:hover:text-red-400 transition-colors duration-200"
+                    >
+                      <div className="w-8 h-8 bg-gradient-to-br from-red-500 to-orange-500 rounded-full flex items-center justify-center">
+                        <span className="text-white text-sm font-medium">
+                          {user.firstname?.[0]}
+                        </span>
+                      </div>
+                      <span className="text-sm font-medium">{user.firstname}</span>
+                    </Link>
+                  ) : (
+                    <Link
+                      href="/login"
+                      className="flex items-center space-x-2 text-gray-700 dark:text-gray-300 hover:text-red-500 dark:hover:text-red-400 transition-colors duration-200"
+                    >
+                      <User className="w-5 h-5" />
+                      <span className="text-sm font-medium">Sign In</span>
+                    </Link>
+                  )}
+                </div>
+
+                {/* Mobile menu button */}
+                <motion.button
+                  whileHover={{ scale: 1.1 }}
+                  whileTap={{ scale: 0.95 }}
+                  onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+                  className="md:hidden p-2 text-gray-700 dark:text-gray-300 hover:text-red-500 dark:hover:text-red-400 transition-colors duration-200"
+                  aria-label="Toggle menu"
+                >
+                  {mobileMenuOpen ? (
+                    <X className="w-5 h-5" />
+                  ) : (
+                    <Menu className="w-5 h-5" />
+                  )}
+                </motion.button>
+              </div>
+            </div>
           </div>
+
+          {/* Search Bar */}
+          <AnimatePresence>
+            {searchOpen && (
+              <motion.div
+                initial={{ opacity: 0, height: 0 }}
+                animate={{ opacity: 1, height: "auto" }}
+                exit={{ opacity: 0, height: 0 }}
+                className="border-t border-gray-200/20 dark:border-gray-700/20"
+              >
+                <div className="px-4 py-4">
+                  <div className="relative">
+                    <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-4 h-4" />
+                    <input
+                      ref={searchInputRef}
+                      type="text"
+                      value={searchQuery}
+                      onChange={(e) => setSearchQuery(e.target.value)}
+                      placeholder="Search for products..."
+                      className="w-full pl-10 pr-4 py-2 bg-gray-50 dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg focus:outline-none focus:ring-2 focus:ring-red-500 focus:border-transparent transition-all duration-200"
+                    />
+                  </div>
+                </div>
+              </motion.div>
+            )}
+          </AnimatePresence>
+
+          {/* Mobile Menu */}
+          <AnimatePresence>
+            {mobileMenuOpen && (
+              <motion.div
+                initial={{ opacity: 0, height: 0 }}
+                animate={{ opacity: 1, height: "auto" }}
+                exit={{ opacity: 0, height: 0 }}
+                className="md:hidden border-t border-gray-200/20 dark:border-gray-700/20"
+              >
+                <div className="px-4 py-4 space-y-4">
+                  {navItems.map((item) => (
+                    <Link
+                      key={item.href}
+                      href={item.href}
+                      onClick={() => setMobileMenuOpen(false)}
+                      className="block text-gray-700 dark:text-gray-300 hover:text-red-500 dark:hover:text-red-400 py-2 text-base font-medium transition-colors duration-200"
+                    >
+                      {item.label}
+                    </Link>
+                  ))}
+                  
+                  <div className="pt-4 border-t border-gray-200/20 dark:border-gray-700/20">
+                    {user ? (
+                      <Link
+                        href="/dashboard"
+                        onClick={() => setMobileMenuOpen(false)}
+                        className="flex items-center space-x-3 text-gray-700 dark:text-gray-300 hover:text-red-500 dark:hover:text-red-400 py-2 transition-colors duration-200"
+                      >
+                        <div className="w-8 h-8 bg-gradient-to-br from-red-500 to-orange-500 rounded-full flex items-center justify-center">
+                          <span className="text-white text-sm font-medium">
+                            {user.firstname?.[0]}
+                          </span>
+                        </div>
+                        <span className="text-base font-medium">{user.firstname}</span>
+                      </Link>
+                    ) : (
+                      <Link
+                        href="/login"
+                        onClick={() => setMobileMenuOpen(false)}
+                        className="flex items-center space-x-3 text-gray-700 dark:text-gray-300 hover:text-red-500 dark:hover:text-red-400 py-2 transition-colors duration-200"
+                      >
+                        <User className="w-5 h-5" />
+                        <span className="text-base font-medium">Sign In</span>
+                      </Link>
+                    )}
+                  </div>
+                </div>
+              </motion.div>
+            )}
+          </AnimatePresence>
         </div>
-      </div>
-    </div>
+      </motion.nav>
+
+      {/* Spacer to prevent content from hiding behind fixed navbar */}
+      <div className="h-24"></div>
+    </>
   );
 };
 

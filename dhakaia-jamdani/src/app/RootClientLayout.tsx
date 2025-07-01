@@ -34,7 +34,7 @@ export default function RootClientLayout({
       <body className={inter.className}>
         <Provider store={store}>
           <div>
-            <Navbar isChecked={theme === 'light'} onToggle={toggleTheme} />
+            <Navbar/>
             {children}
             <FloatingCart />
             <Footer />
