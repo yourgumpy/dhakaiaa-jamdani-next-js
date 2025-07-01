@@ -1,11 +1,11 @@
 "use client";
 import { Suspense } from 'react';
-import EnhancedShopSection from '../components/ShopPage/EnhancedShopSection';
+import ShopSection from '../components/ShopPage/ShopSection';
 
 const Shop = () => {
   return (
     <Suspense fallback={<div>Loading products...</div>}>
-      <EnhancedShopSection />
+      <ShopSection />
     </Suspense>
   );
 };
