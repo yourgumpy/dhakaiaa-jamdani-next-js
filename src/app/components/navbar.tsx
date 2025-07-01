@@ -8,13 +8,15 @@ import { UserProfile, userProfile } from "@/app/auth/getUser";
 import { supabase } from "../utils/supabase/supabaseClient";
 import ThemeToggle from "./ui/ThemeToggle";
 import SearchWithAutocomplete from "./search/SearchWithAutocomplete";
-import { useSelector } from "react-redux";
+import { useSelector, useDispatch } from "react-redux";
 
 const Navbar = () => {
   const [user, setUser] = useState<UserProfile | null>(null);
   const [searchOpen, setSearchOpen] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [cartOpen, setCartOpen] = useState(false);
   const { cart } = useSelector((state: any) => state.cart);
+  const dispatch = useDispatch();
 
   const totalItems = cart.reduce((total: number, item: any) => total + item.quantity, 0);
 
@@ -32,6 +34,15 @@ const Navbar = () => {
       }
     });
   }, []);
+
+  // Function to trigger the floating cart
+  const handleCartClick = () => {
+    // Trigger the floating cart by dispatching a custom event
+    const cartButton = document.querySelector('[data-cart-trigger]') as HTMLButtonElement;
+    if (cartButton) {
+      cartButton.click();
+    }
+  };
 
   const navItems = [
     { href: "/", label: "Home" },
@@ -98,32 +109,33 @@ const Navbar = () => {
                 <ThemeToggle size="sm" />
 
                 {/* Cart */}
-                <motion.div
+                <motion.button
                   whileHover={{ scale: 1.1 }}
-                  className="relative"
+                  whileTap={{ scale: 0.95 }}
+                  onClick={handleCartClick}
+                  className="relative p-2 text-gray-700 dark:text-gray-300 hover:text-red-500 dark:hover:text-red-400 transition-colors duration-200"
+                  aria-label="Shopping Cart"
                 >
-                  <div className="p-2 text-gray-700 dark:text-gray-300 hover:text-red-500 dark:hover:text-red-400 transition-colors duration-200 cursor-pointer">
-                    <ShoppingBag className="w-5 h-5" />
-                    <AnimatePresence>
-                      {totalItems > 0 && (
-                        <motion.span
-                          initial={{ scale: 0 }}
-                          animate={{ scale: 1 }}
-                          exit={{ scale: 0 }}
-                          className="absolute -top-1 -right-1 bg-red-500 text-white text-xs rounded-full w-5 h-5 flex items-center justify-center font-bold"
-                        >
-                          {totalItems}
-                        </motion.span>
-                      )}
-                    </AnimatePresence>
-                  </div>
-                </motion.div>
+                  <ShoppingBag className="w-5 h-5" />
+                  <AnimatePresence>
+                    {totalItems > 0 && (
+                      <motion.span
+                        initial={{ scale: 0 }}
+                        animate={{ scale: 1 }}
+                        exit={{ scale: 0 }}
+                        className="absolute -top-1 -right-1 bg-red-500 text-white text-xs rounded-full w-5 h-5 flex items-center justify-center font-bold"
+                      >
+                        {totalItems > 99 ? '99+' : totalItems}
+                      </motion.span>
+                    )}
+                  </AnimatePresence>
+                </motion.button>
 
                 {/* User */}
                 <div className="hidden md:block">
                   {user ? (
                     <Link
-                      href="/dashboard"
+                      href={user.role === "admin" ? "/Admin/AllProducts" : "/dashboard"}
                       className="flex items-center space-x-2 text-gray-700 dark:text-gray-300 hover:text-red-500 dark:hover:text-red-400 transition-colors duration-200"
                     >
                       <div className="w-8 h-8 bg-gradient-to-br from-red-500 to-orange-500 rounded-full flex items-center justify-center">
@@ -186,7 +198,7 @@ const Navbar = () => {
                   <div className="pt-4 border-t border-gray-200/20 dark:border-gray-700/20">
                     {user ? (
                       <Link
-                        href="/dashboard"
+                        href={user.role === "admin" ? "/Admin/AllProducts" : "/dashboard"}
                         onClick={() => setMobileMenuOpen(false)}
                         className="flex items-center space-x-3 text-gray-700 dark:text-gray-300 hover:text-red-500 dark:hover:text-red-400 py-2 transition-colors duration-200"
                       >

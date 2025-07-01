@@ -124,6 +124,26 @@ const Footer = () => {
                   <span>info@dhakaiaajamdani.com</span>
                 </div>
               </div>
+
+              {/* Location Map */}
+              <div className="mt-6">
+                <h4 className="text-lg font-semibold text-white mb-3">Visit Our Store</h4>
+                <div className="relative w-full h-48 rounded-lg overflow-hidden border border-gray-700">
+                  <iframe
+                    src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d233668.38703692693!2d90.25487!3d23.7808875!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3755b8b087026b81%3A0x8fa563bbdd5904c2!2sDhaka%2C%20Bangladesh!5e0!3m2!1sen!2sus!4v1703123456789!5m2!1sen!2sus"
+                    width="100%"
+                    height="100%"
+                    style={{ border: 0 }}
+                    allowFullScreen
+                    loading="lazy"
+                    referrerPolicy="no-referrer-when-downgrade"
+                    className="grayscale hover:grayscale-0 transition-all duration-300"
+                  />
+                  <div className="absolute top-2 left-2 bg-red-500 text-white p-2 rounded-full shadow-lg">
+                    <MapPin className="w-4 h-4" />
+                  </div>
+                </div>
+              </div>
             </motion.div>
           </div>
 

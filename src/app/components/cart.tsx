@@ -42,7 +42,10 @@ export default function FloatingCart() {
         animate={{ scale: 1 }}
         className="fixed bottom-8 right-8 z-[100]"
       >
-        <div className="relative bg-red-500 hover:bg-red-600 text-white p-4 rounded-full shadow-lg">
+        <div 
+          className="relative bg-red-500 hover:bg-red-600 text-white p-4 rounded-full shadow-lg"
+          data-cart-trigger
+        >
           <motion.div
             animate={{ rotate: 360 }}
             transition={{ duration: 2, repeat: Infinity, ease: "linear" }}
@@ -83,6 +86,7 @@ export default function FloatingCart() {
           whileHover={{ scale: 1.1 }}
           whileTap={{ scale: 0.9 }}
           className="relative bg-gradient-to-r from-red-500 to-orange-500 hover:from-red-600 hover:to-orange-600 text-white p-4 rounded-full shadow-lg transition-all duration-300"
+          data-cart-trigger
         >
           <ShoppingCart className="w-6 h-6" />
           <AnimatePresence>
